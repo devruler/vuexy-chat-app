@@ -18,22 +18,22 @@ export default {
     const chatContacts = state.chatContacts.filter((contact) => contact.name.toLowerCase().includes(state.chatSearchQuery.toLowerCase()))
 
     chatContacts.sort((x, y) => {
-      const timeX = getters.chatLastMessaged(x.uid).time
-      const timeY = getters.chatLastMessaged(y.uid).time
+      const timeX = getters.chatLastMessaged(x.id).time
+      const timeY = getters.chatLastMessaged(y.id).time
       return new Date(timeY) - new Date(timeX)
     })
 
     return chatContacts.sort((x, y) => {
-      const chatDataX = getters.chatDataOfUser(x.uid)
-      const chatDataY = getters.chatDataOfUser(y.uid)
+      const chatDataX = getters.chatDataOfUser(x.id)
+      const chatDataY = getters.chatDataOfUser(y.id)
       if (chatDataX && chatDataY) return chatDataY.isPinned - chatDataX.isPinned
       else return 0
     })
   },
   contacts: (state) => state.contacts.filter((contact) => contact.name.toLowerCase().includes(state.chatSearchQuery.toLowerCase())),
-  contact: (state) => contactId => state.contacts.find((contact) => contact.uid === contactId),
+  contact: (state) => contactId => state.contacts.find((contact) => contact.id === contactId),
   chats: (state) => state.chats,
-  chatUser: (state, getters, rootState) => id => state.contacts.find((contact) => contact.uid === id) || rootState.AppActiveUser,
+  chatUser: (state, getters, rootState) => id => state.contacts.find((contact) => contact.id === id) || rootState.AppActiveUser,
 
   chatLastMessaged: (state, getters) => id => {
     if (getters.chatDataOfUser(id)) return getters.chatDataOfUser(id).msg.slice(-1)[0]

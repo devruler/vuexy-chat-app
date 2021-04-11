@@ -17,7 +17,7 @@
 
             <div class="chat__profile-search flex p-4">
                 <div class="relative inline-flex">
-                    <vs-avatar v-if="activeUser.photoURL" class="m-0 border-2 border-solid border-white" :src="activeUser.photoURL" size="40px" @click="showProfileSidebar(Number(activeUser.uid), true)" />
+                    <vs-avatar v-if="activeUser.photoURL" class="m-0 border-2 border-solid border-white" :src="activeUser.photoURL" size="40px" @click="showProfileSidebar(Number(activeUser.id), true)" />
                     <div class="h-3 w-3 border-white border border-solid rounded-full absolute right-0 bottom-0" :class="'bg-' + getStatusColor(true)"></div>
                 </div>
                 <vs-input icon-no-border icon="icon-search" icon-pack="feather" class="w-full mx-5 input-rounded-full" placeholder="Search or start a new chat" v-model="searchQuery"/>
@@ -32,8 +32,8 @@
                 <div class="chat__chats-list mb-8">
                     <h3 class="text-primary mb-5 px-4">Chats</h3>
                     <ul class="chat__active-chats bordered-items">
-                        <li class="cursor-pointer" v-for="(contact, index) in chatContacts" :key="index" @click="updateActiveChatUser(contact.uid)">
-                            <chat-contact showLastMsg :contact="contact" :lastMessaged="chatLastMessaged(contact.uid).time" :unseenMsg="chatUnseenMessages(contact.uid)" :isActiveChatUser="isActiveChatUser(contact.uid)"></chat-contact>
+                        <li class="cursor-pointer" v-for="(contact, index) in chatContacts" :key="index" @click="updateActiveChatUser(contact.id)">
+                            <chat-contact showLastMsg :contact="contact" :lastMessaged="chatLastMessaged(contact.id).time" :unseenMsg="chatUnseenMessages(contact.id)" :isActiveChatUser="isActiveChatUser(contact.id)"></chat-contact>
                         </li>
                     </ul>
                 </div>
@@ -43,7 +43,7 @@
                 <div class="chat__contacts">
                     <h3 class="text-primary mb-5 px-4">Contacts</h3>
                     <ul class="chat__contacts bordered-items">
-                        <li class="cursor-pointer" v-for="contact in contacts" :key="contact.uid" @click="updateActiveChatUser(contact.uid)">
+                        <li class="cursor-pointer" v-for="contact in contacts" :key="contact.id" @click="updateActiveChatUser(contact.id)">
                             <chat-contact :contact="contact"></chat-contact>
                         </li>
                     </ul>

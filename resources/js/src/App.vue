@@ -61,7 +61,7 @@ export default {
         Axios.get('/api/user')
         .then(res =>{
             let data = res.data
-            this.$store.dispatch('updateUserInfo', { uid: data.id, name: data.name, photoURL: ("https://ui-avatars.com/api/?name=" + data.name.split(' ').join('+'))})
+            this.$store.dispatch('updateUserInfo', { id: data.id, name: data.name, photoURL: ("https://ui-avatars.com/api/?name=" + data.name.split(' ').join('+'))})
         })
         .catch(err => console.log(err))
     }
