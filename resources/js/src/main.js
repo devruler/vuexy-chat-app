@@ -57,17 +57,20 @@ import 'prismjs/themes/prism-tomorrow.css'
 // Note: In latest version you have to add it separately
 // import 'vue-select/dist/vue-select.css';
 
+// Broadcasting configurations
+import Echo from 'laravel-echo';
+
+window.Pusher = require('pusher-js');
+
+window.Echo = new Echo({
+    broadcaster: 'pusher',
+    key: process.env.MIX_PUSHER_APP_KEY,
+    cluster: process.env.MIX_PUSHER_APP_CLUSTER,
+    forceTLS: true
+});
+
 
 Vue.config.productionTip = false
-
-// import Login from './views/pages/Login.vue'
-
-// if (document.querySelector('#login')) {
-//     new Vue({
-//         store,
-//         render: h => h(Login)
-//     }).$mount('#login')
-// }
 
 if (document.querySelector('#app')) {
     new Vue({

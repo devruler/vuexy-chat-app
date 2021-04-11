@@ -9,6 +9,13 @@ class Message extends Model
 {
     use HasFactory;
 
+    protected $guarded = [];
+
+    protected $casts = [
+        'is_sent' => 'boolean',
+        'is_seen' => 'boolean',
+    ];
+
     public function chat(){
         return $this->belongsTo(Chat::class);
     }
