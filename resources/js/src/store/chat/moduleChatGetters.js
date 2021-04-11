@@ -15,7 +15,7 @@ export default {
     return state.chats[Object.keys(state.chats).find(key => Number(key) === id)]
   },
   chatContacts: (state, getters) => {
-    const chatContacts = state.chatContacts.filter((contact) => contact.displayName.toLowerCase().includes(state.chatSearchQuery.toLowerCase()))
+    const chatContacts = state.chatContacts.filter((contact) => contact.name.toLowerCase().includes(state.chatSearchQuery.toLowerCase()))
 
     chatContacts.sort((x, y) => {
       const timeX = getters.chatLastMessaged(x.uid).time
@@ -30,7 +30,7 @@ export default {
       else return 0
     })
   },
-  contacts: (state) => state.contacts.filter((contact) => contact.displayName.toLowerCase().includes(state.chatSearchQuery.toLowerCase())),
+  contacts: (state) => state.contacts.filter((contact) => contact.name.toLowerCase().includes(state.chatSearchQuery.toLowerCase())),
   contact: (state) => contactId => state.contacts.find((contact) => contact.uid === contactId),
   chats: (state) => state.chats,
   chatUser: (state, getters, rootState) => id => state.contacts.find((contact) => contact.uid === id) || rootState.AppActiveUser,

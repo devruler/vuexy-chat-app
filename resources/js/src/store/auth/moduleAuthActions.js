@@ -84,13 +84,13 @@ export default {
         // if username is provided and updateUsername FLAG is true
         // set local username update FLAG to true
         // try to update username
-        if (payload.updateUsername && payload.userDetails.displayName) {
+        if (payload.updateUsername && payload.userDetails.name) {
 
           isUsernameUpdateRequired = true
 
           dispatch('updateUsername', {
             user: result.user,
-            username: payload.userDetails.displayName,
+            username: payload.userDetails.name,
             notify: payload.notify,
             isReloadRequired: true
           })
@@ -272,13 +272,13 @@ export default {
   },
   updateUsername ({ commit }, payload) {
     payload.user.updateProfile({
-      displayName: payload.displayName
+      name: payload.name
     }).then(() => {
 
       // If username update is success
       // update in localstorage
       const newUserData = Object.assign({}, payload.user.providerData[0])
-      newUserData.displayName = payload.displayName
+      newUserData.name = payload.name
       commit('UPDATE_USER_INFO', newUserData, {root: true})
 
       // If reload is required to get fresh data after update
@@ -331,7 +331,7 @@ export default {
   },
   registerUserJWT ({ commit }, payload) {
 
-    const { displayName, email, password, confirmPassword } = payload.userDetails
+    const { name, email, password, confirmPassword } = payload.userDetails
 
     return new Promise((resolve, reject) => {
 
@@ -340,7 +340,7 @@ export default {
         reject({message: 'Password doesn\'t match. Please try again.'})
       }
 
-      jwt.registerUser(displayName, email, password)
+      jwt.registerUser(name, email, password)
         .then(response => {
           // Redirect User
           router.push(router.currentRoute.query.to || '/')

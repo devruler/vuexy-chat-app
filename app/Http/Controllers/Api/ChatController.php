@@ -11,14 +11,18 @@ use Illuminate\Http\Request;
 class ChatController extends Controller
 {
     public function storeMsg(Request $request){
-        return Message::create($request->all());
+        // return Message::create($request->all());
+        return Message::create([
+            'content' => $request->msg['textContent'],
+            'content' => $request->msg['textContent'],
+        ]);
     }
 
     public function getChats(){
         return Chat::all();
     }
 
-    public function getContact(){
+    public function getContacts(){
         return User::all();
     }
 }
