@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Message;
 use App\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class ChatController extends Controller
 {
@@ -23,6 +24,6 @@ class ChatController extends Controller
     }
 
     public function getContacts(){
-        return User::all();
+        return User::where('id', '!=', Auth::id())->get();
     }
 }
