@@ -37,7 +37,7 @@ export default {
   },
   computed: {
       avatarFromName(){
-          return 'https://ui-avatars.com/api/?name=' + contact.name.split(' ').join('+') + '&background=random'
+          return 'https://ui-avatars.com/api/?name=' + this.contact.name.split(' ').join('+') + '&background=random'
       }
   }
 }

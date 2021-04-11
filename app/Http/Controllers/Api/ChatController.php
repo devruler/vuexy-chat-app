@@ -20,10 +20,15 @@ class ChatController extends Controller
     }
 
     public function getChats(){
-        return Chat::all();
+        return Auth::user()->chats;
     }
 
     public function getContacts(){
         return User::where('id', '!=', Auth::id())->get();
     }
+
+    public function getChatContacts(){
+        return auth()->user()->chats;
+    }
+
 }

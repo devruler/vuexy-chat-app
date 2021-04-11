@@ -23,4 +23,5 @@ Route::prefix('/apps/chat')->middleware('auth:api')->group(function () {
     Route::post('msg', 'Api\ChatController@storeMsg');
     Route::get('contacts', 'Api\ChatController@getContacts');
     Route::get('chats', 'Api\ChatController@getChats');
+    Route::get('chat-contacts', 'Api\ChatController@getChatContacts');
 });
