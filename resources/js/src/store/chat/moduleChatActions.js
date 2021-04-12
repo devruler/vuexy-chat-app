@@ -93,7 +93,7 @@ export default {
 
   toggleIsPinned ({ commit }, payload) {
     return new Promise((resolve, reject) => {
-      axios.post('/api/apps/chat/set-pinned/', {contactId: payload.id,
+      axios.post('/api/apps/chat/set-pinned', {contactId: payload.id,
         value: payload.value})
         .then((response) => {
           commit('TOGGLE_IS_PINNED', payload)

@@ -25,4 +25,5 @@ Route::prefix('/apps/chat')->middleware('auth:api')->group(function () {
     Route::get('chats', 'Api\ChatController@getChats');
     Route::get('chat-contacts', 'Api\ChatController@getChatContacts');
     Route::post('mark-all-seen', 'Api\ChatController@markAllSeen');
+    Route::post('set-pinned', 'Api\ChatController@setPinned');
 });
