@@ -260,9 +260,12 @@ export default {
     },
   },
   //   watch: {
-  //       chats(){
-  //           this.connect()
-  //       }
+  //     chatContacts: {
+  //       handler: function (val, oldVal) {
+  //         console.log('chatContacts changed')
+  //       },
+  //       deep: true
+  //     }
   //   },
   methods: {
     getUserStatus(isActiveUser) {
@@ -292,7 +295,7 @@ export default {
       this.isLoggedInUserProfileView = openOnLeft;
       this.activeProfileSidebar = !this.activeProfileSidebar;
     },
-    sendMsg() {
+    async sendMsg() {
       if (!this.typedMessage) return;
       const payload = {
         isPinned: this.isChatPinned,
@@ -304,8 +307,19 @@ export default {
         },
         id: this.activeChatUser,
       };
-      this.$store.dispatch("chat/sendChatMessage", payload);
+
       this.typedMessage = "";
+
+      await this.$store.dispatch("chat/sendChatMessage", payload);
+
+      // Track new chat if started
+
+      if (!this.$store.getters["chat/chatDataOfUser"](this.activeChatUser)) {
+        await this.$store.dispatch("chat/fetchChatContacts");
+        await this.$store.dispatch("chat/fetchChats");
+
+        this.trackNewMessages()
+      }
 
       const scroll_el = this.$refs.chatLogPS.$el || this.$refs.chatLogPS;
       scroll_el.scrollTop = this.$refs.chatLog.scrollHeight;
@@ -324,20 +338,33 @@ export default {
       if (!value && this.clickNotClose) return;
       this.isChatSidebarActive = value;
     },
-    connect() {
-      console.log(JSON.parse(JSON.stringify(this.chats)));
+    trackNewChats() {
+      window.Echo.private("chats").listen("NewChatStarted", async (e) => {
+        await this.$store.dispatch("chat/fetchChatContacts");
+        await this.$store.dispatch("chat/fetchChats");
+        this.trackNewMessages()
+      });
+    },
+    untrackNewChats() {
+      window.Echo.leave("chats");
+    },
+    trackNewMessages() {
+      //   console.log(JSON.parse(JSON.stringify(this.chats)));
       for (const prop in this.chats) {
         console.log(this.chats[prop].chat_id);
-        window.Echo.private("chat." + this.chats[prop].chat_id).listen("NewChatMessage", (e) => {
-          this.$store.dispatch("chat/fetchChats");
-        });
+        window.Echo.private("chat." + this.chats[prop].chat_id).listen(
+          "NewChatMessage",
+          (e) => {
+            this.$store.dispatch("chat/fetchChats");
+          }
+        );
       }
     },
-    disconnect() {
-      console.log(JSON.parse(JSON.stringify(this.chats)));
+    untrackNewMessages() {
+      //   console.log(JSON.parse(JSON.stringify(this.chats)));
       for (const prop in this.chats) {
         console.log(prop);
-        window.Echo.leave("chat." + this.chats[prop].chat_id)
+        window.Echo.leave("chat." + this.chats[prop].chat_id);
       }
     },
   },
@@ -355,7 +382,8 @@ export default {
     await this.$store.dispatch("chat/fetchChats");
     this.setSidebarWidth();
 
-    this.connect();
+    this.trackNewChats();
+    this.trackNewMessages();
   },
   beforeDestroy() {
     this.$store.unregisterModule("chat");
@@ -364,7 +392,7 @@ export default {
     this.$store.dispatch("chat/setChatSearchQuery", "");
   },
   destroyed() {
-    this.disconnect();
+    this.untrackNewMessages();
   },
 };
 </script>

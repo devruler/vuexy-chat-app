@@ -4,11 +4,13 @@ namespace App\Http\Controllers\Api;
 
 use App\Chat;
 use App\Events\NewChatMessage;
+use App\Events\NewChatStarted;
 use App\Http\Controllers\Controller;
 use App\Message;
 use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Broadcast;
 
 class ChatController extends Controller
 {
@@ -18,8 +20,10 @@ class ChatController extends Controller
         $recipient = User::find($request->payload['id']);
 
         // Get chat if exists
-        $chatId = ($request->payload['id'] + auth()->id());
-        $chat = Chat::where('id', $chatId)->first();
+        // $chatId = ($request->payload['id'] + auth()->id());
+        $chat = Chat::whereIn('recipient_id', [auth()->id(), $request->payload['id']])
+        ->whereIn('sender_id', [auth()->id(), $request->payload['id']])
+        ->first();
 
         if ($chat) {
             // Update chat if exists
@@ -28,10 +32,14 @@ class ChatController extends Controller
         } else {
             // Else create new chat with $chatId which is the sum of the two chat users ids
             $chat = Chat::create([
-                'id' => $chatId,
+                // 'id' => $chatId,
                 'recipient_id' => $request->payload['id'],
+                'sender_id' => auth()->id(),
                 'is_pinned' => $request->payload['isPinned']
             ]);
+
+            // Broadcast new chat started notification
+            broadcast(new NewChatStarted($chat))->toOthers();
         }
 
         // Attach the chat to the appropriate users
@@ -66,7 +74,7 @@ class ChatController extends Controller
 
         // Manupilate and return the expected data to the frontend
         foreach ($currentUserChats as $chat) {
-            $chats[$chat->recipient_id === auth()->id() ? ($chat->id - auth()->id()) : $chat->recipient_id] = [
+            $chats[$chat->sender_id !== auth()->id() ? $chat->sender_id : $chat->recipient_id] = [
                 'isPinned' => $chat->is_pinned,
                 'chat_id' => $chat->id,
                 'msg' => $chat->messages->map(function ($msg, $key) {
@@ -117,13 +125,15 @@ class ChatController extends Controller
             ]);
     }
 
-    public function setPinned(Request $request){
-
+    public function setPinned(Request $request)
+    {
         // Get chat id from the sum of the current user id and the contact "recipient" id
         $chatId = (auth()->id() + $request->contactId);
 
         // Find and set the chat "pinned" value
-        return Chat::find($chatId)->update([
+        return Chat::whereIn('recipient_id', [auth()->id(), $request->contactId])
+        ->whereIn('sender_id', [auth()->id(), $request->contactId])
+        ->update([
             'is_pinned' => $request->value,
         ]);
     }

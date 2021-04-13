@@ -23,7 +23,7 @@
 
       <!-- <search-bar class="mr-4" /> -->
 
-      <!-- <notification-drop-down /> -->
+      <notification-drop-down />
 
       <profile-drop-down />
 

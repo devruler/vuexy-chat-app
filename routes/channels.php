@@ -23,3 +23,10 @@ Broadcast::channel('chat.{chat_id}', function ($user, $chat_id) {
         'name' => $user->name,
     ];
 });
+
+Broadcast::channel('chats', function ($user) {
+    return [
+        'id' => $user->id,
+        'name' => $user->name,
+    ];
+});

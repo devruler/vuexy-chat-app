@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddRecipientIdToChatsTable extends Migration
+class AddSenderIdToChatsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -14,7 +14,7 @@ class AddRecipientIdToChatsTable extends Migration
     public function up()
     {
         Schema::table('chats', function (Blueprint $table) {
-            $table->integer('recipient_id')->after('id');
+            $table->integer('sender_id')->after('recipient_id');
         });
     }
 
@@ -26,7 +26,7 @@ class AddRecipientIdToChatsTable extends Migration
     public function down()
     {
         Schema::table('chats', function (Blueprint $table) {
-            $table->dropColumn(['recipient_id']);
+            $table->dropColumn(['sender_id']);
         });
     }
 }

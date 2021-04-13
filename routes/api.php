@@ -26,4 +26,11 @@ Route::prefix('/apps/chat')->middleware('auth:api')->group(function () {
     Route::get('chat-contacts', 'Api\ChatController@getChatContacts');
     Route::post('mark-all-seen', 'Api\ChatController@markAllSeen');
     Route::post('set-pinned', 'Api\ChatController@setPinned');
+
+
+});
+
+Route::prefix('/notifications')->middleware('auth:api')->group(function () {
+    Route::post('/', 'Api\NotificationController@storeNotification');
+    Route::get('/', 'Api\NotificationController@getNotifications');
 });
