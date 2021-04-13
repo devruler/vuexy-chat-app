@@ -36,7 +36,19 @@
                 </template>
 
                 <div class="msg break-words relative shadow-md rounded py-3 px-4 mb-2 rounded-lg max-w-sm" :class="{'bg-primary-gradient text-white': msg.isSent, 'border border-solid border-transparent bg-white': !msg.isSent}">
-                    <span>{{ msg.textContent }}</span>
+                    <span v-if="msg.textContent">{{ msg.textContent }}</span>
+                    <div v-if="msg.attachment">
+                        <hr class="my-3 border border-grey border-opacity-25" />
+                    <a :href="msg.attachment.path" class="text-white flex align-items text-sm" target="_blank">
+                        <feather-icon
+                            icon="PaperclipIcon"
+                            class="cursor-pointer mr-2"
+                            :svgClasses="['w-4', 'h-4']"
+                        ></feather-icon>
+                        <span>{{ msg.attachment.name }}</span>
+                        </a>
+                    </div>
+
                 </div>
             </div>
         </div>

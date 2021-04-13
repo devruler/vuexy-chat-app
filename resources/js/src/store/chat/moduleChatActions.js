@@ -29,7 +29,7 @@ export default {
   // API CALLS
   sendChatMessage ({ getters, commit, dispatch }, payload) {
     return new Promise((resolve, reject) => {
-      axios.post('/api/apps/chat/msg', {payload})
+      axios.post('/api/apps/chat/msg', payload)
         .then((response) => {
           payload.chatData = getters.chatDataOfUser(payload.id)
           if (!payload.chatData) { dispatch('fetchChatContacts') }

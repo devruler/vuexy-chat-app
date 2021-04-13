@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Attachment;
 use App\Chat;
 use App\Events\NewChatMessage;
 use App\Events\NewChatStarted;
@@ -16,26 +17,28 @@ class ChatController extends Controller
 {
     public function storeMsg(Request $request)
     {
+        $payload = json_decode($request->payload);
+
         // Get recipient user
-        $recipient = User::find($request->payload['id']);
+        $recipient = User::find($payload->id);
 
         // Get chat if exists
         // $chatId = ($request->payload['id'] + auth()->id());
-        $chat = Chat::whereIn('recipient_id', [auth()->id(), $request->payload['id']])
-        ->whereIn('sender_id', [auth()->id(), $request->payload['id']])
+        $chat = Chat::whereIn('recipient_id', [auth()->id(), $payload->id])
+        ->whereIn('sender_id', [auth()->id(), $payload->id])
         ->first();
 
         if ($chat) {
             // Update chat if exists
-            $chat->is_pinned = $request->payload['isPinned'];
+            $chat->is_pinned = $payload->isPinned;
             $chat->save();
         } else {
             // Else create new chat with $chatId which is the sum of the two chat users ids
             $chat = Chat::create([
                 // 'id' => $chatId,
-                'recipient_id' => $request->payload['id'],
+                'recipient_id' => $payload->id,
                 'sender_id' => auth()->id(),
-                'is_pinned' => $request->payload['isPinned']
+                'is_pinned' => $payload->isPinned
             ]);
 
             // Broadcast new chat started notification
@@ -51,12 +54,26 @@ class ChatController extends Controller
         // Create and attach the messages to the chat
 
         $message = $chat->messages()->create([
-            'content' => $request->payload['msg']['textContent'],
-            'is_sent' => $request->payload['msg']['isSent'],
-            'is_seen' => $request->payload['msg']['isSeen'],
+            'content' => $payload->msg->textContent,
+            'is_sent' => $payload->msg->isSent,
+            'is_seen' => $payload->msg->isSeen,
             'user_id' => auth()->id(),
             'chat_id' => $chat->id,
         ]);
+
+        if($request->hasFile('attachment')){
+            $file = $request->file('attachment');
+            $ext = $file->extension();
+            $name = uniqid() . '.' . $ext;
+            $path = '/storage/attachments/' .  $name;
+            $file->storePubliclyAs('public', '/attachments/' . $name);
+            $attachment = Attachment::create([
+                'name' => $name,
+                'path' => $path,
+                'extension' => $ext,
+                'message_id' => $message->id
+            ]);
+        }
 
         // Broadcast the new message to other users
 
@@ -68,7 +85,7 @@ class ChatController extends Controller
     public function getChats()
     {
         // Get current user active chats
-        $currentUserChats = auth()->user()->chats()->with('messages')->get();
+        $currentUserChats = auth()->user()->chats()->with('messages.attachment')->get();
 
         $chats = [];
 
@@ -82,6 +99,7 @@ class ChatController extends Controller
                         'isSeen' => $msg->is_seen,
                         'isSent' => $msg->user_id === auth()->id() ? $msg->is_sent : !$msg->is_sent,
                         'textContent' => $msg->content,
+                        'attachment' => $msg->attachment,
                         'time' => $msg->created_at,
                     ];
                 })
