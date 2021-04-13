@@ -17,6 +17,9 @@
             </div>
             <h6>{{ userDetails.name }}</h6>
             <vs-spacer></vs-spacer>
+            <feather-icon icon="PaperclipIcon" class="cursor-pointer mr-2" :svgClasses="[ 'w-6', 'h-6']" ></feather-icon>
+            <feather-icon icon="VideoIcon" class="cursor-pointer mr-2" :svgClasses="[ 'w-6', 'h-6']" ></feather-icon>
+            <feather-icon icon="SearchIcon" class="cursor-pointer mr-2" :svgClasses="[ 'w-6', 'h-6']" ></feather-icon>
             <feather-icon icon="StarIcon" class="cursor-pointer" :svgClasses="[{'text-warning stroke-current': isPinnedLocal}, 'w-6', 'h-6']" @click.stop="isPinnedLocal = !isPinnedLocal"></feather-icon>
         </vs-navbar>
     </div>
