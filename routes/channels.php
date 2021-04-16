@@ -30,3 +30,11 @@ Broadcast::channel('chats', function ($user) {
         'name' => $user->name,
     ];
 });
+
+Broadcast::channel('group-chat.{group_id}', function ($user, $group_id) {
+    return $user;
+});
+
+Broadcast::channel('group-chats', function ($user) {
+    return $user;
+});

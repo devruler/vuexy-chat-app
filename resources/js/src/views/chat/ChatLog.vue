@@ -39,13 +39,13 @@
                     <span v-if="msg.textContent">{{ msg.textContent }}</span>
                     <div v-if="msg.attachment">
                         <hr class="my-3 border border-grey border-opacity-25" />
-                    <a :href="msg.attachment.path" class="text-white flex align-items text-sm" target="_blank">
+                    <a :href="msg.attachment.path" class="flex align-items text-sm" target="_blank">
                         <feather-icon
                             icon="PaperclipIcon"
-                            class="cursor-pointer mr-2"
+                            class="cursor-pointer text-grey mr-2"
                             :svgClasses="['w-4', 'h-4']"
                         ></feather-icon>
-                        <span>{{ msg.attachment.name }}</span>
+                        <span :class="{'text-white': msg.isSent, 'text-black text-opacity-75': !msg.isSent}">{{ msg.attachment.name }}</span>
                         </a>
                     </div>
 

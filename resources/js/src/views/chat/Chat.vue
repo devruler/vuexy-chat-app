@@ -90,6 +90,82 @@
                     </ul>
                 </div>
 
+                <!-- ACTIVE GROUP LIST -->
+                <div class="chat__chats-list mb-8">
+                    <div class="flex justify-between">
+                        <h3 class="text-primary mb-5 px-4">Groups</h3>
+                        <vs-button
+                            @click="popupActive = true"
+                            color="primary"
+                            type="filled"
+                            size="small"
+                            class="mb-5 mx-2"
+                            >Create</vs-button
+                        >
+                    </div>
+
+                    <vs-popup
+                        class="holamundo"
+                        title="Create new group"
+                        :active.sync="popupActive"
+                    >
+                        <form @submit.prevent="createGroup">
+                            <div class="demo-alignment">
+                                <vs-input
+                                    label="Group name"
+                                    type="group"
+                                    placeholder="Group name"
+                                    v-model="newGroup.name"
+                                    class="w-full"
+                                />
+
+                                <v-select
+                                    class="w-full"
+                                    placeholder="Add contacts"
+                                    multiple
+                                    :closeOnSelect="false"
+                                    v-model="newGroup.contacts"
+                                    :options="contacts"
+                                    label="name"
+                                    :dir="$vs.rtl ? 'rtl' : 'ltr'"
+                                />
+
+                                <!-- <loading-spinner v-if="isLoading" /> -->
+
+                                <vs-button
+                                    color="primary"
+                                    type="filled"
+                                    button="submit"
+                                >
+                                    <span>Submit</span>
+                                </vs-button>
+                            </div>
+                        </form>
+                    </vs-popup>
+
+                    <ul class="chat__contacts bordered-items">
+                        <li
+                            class="cursor-pointer"
+                            v-for="(group, index) in groups"
+                            :key="index"
+                            @click="updateActiveChatGroup(group.id)"
+                        >
+                            <chat-group
+                                :group="group"
+                                :showLastMsg="true"
+                                :lastMessaged="
+                                    groupChatLastMessaged(group.id)
+                                        ? groupChatLastMessaged(group.id)
+                                              .created_at
+                                        : ''
+                                "
+                                :unseenMsg="groupChatUnseenMessages(group.id)"
+                                :isActiveChatGroup="isActiveChatGroup(group.id)"
+                            ></chat-group>
+                        </li>
+                    </ul>
+                </div>
+
                 <!-- CONTACTS LIST -->
                 <div class="chat__contacts">
                     <h3 class="text-primary mb-5 px-4">Contacts</h3>
@@ -112,14 +188,16 @@
             class="chat__bg no-scroll-content chat-content-area border border-solid d-theme-border-grey-light border-t-0 border-r-0 border-b-0"
             :class="{
                 'sidebar-spacer--wide': clickNotClose,
-                'flex items-center justify-center': activeChatUser === null,
+                'flex items-center justify-center':
+                    activeChatUser === null && activeChatGroup === null,
             }"
         >
-            <template v-if="activeChatUser">
+            <template v-if="activeChatUser || activeChatGroup">
                 <div class="chat__navbar">
                     <chat-navbar
                         :isSidebarCollapsed="!clickNotClose"
                         :user-id="activeChatUser"
+                        :group-id="activeChatGroup"
                         :isPinnedProp="isChatPinned"
                         @openContactsSidebar="toggleChatSidebar(true)"
                         @showProfileSidebar="showProfileSidebar"
@@ -138,6 +216,12 @@
                             :userId="activeChatUser"
                             v-if="activeChatUser"
                         ></chat-log>
+
+                        <chat-group-log
+                            :groupId="activeChatGroup"
+                            :activeUser="activeUser"
+                            v-if="activeChatGroup"
+                        ></chat-group-log>
                     </div>
                 </component>
                 <div class="chat__input flex flex-wrap p-4 bg-white">
@@ -145,42 +229,80 @@
                         class="flex-1"
                         placeholder="Type Your Message"
                         v-model="typedMessage"
+                        maxlength="1000"
                         @keyup.enter="sendMsg"
                     />
 
                     <!-- File Attachment -->
-                    <label for="file-upload" class="flex px-2 cursor-pointer">
+                    <!-- <label for="file-upload" class="flex px-2 cursor-pointer">
                         <feather-icon
                             icon="PaperclipIcon"
                             class="cursor-pointer"
                             :title="attachmentName ? attachmentName : ''"
                             :svgClasses="['w-6', 'h-6']"
                         ></feather-icon>
-                        <input type="file" id="file-upload"
-                        @change="handleFile"/>
-                    </label>
+                        <input
+                            type="file"
+                            id="file-upload"
+                            @change="handleFile"
+                        />
+                    </label> -->
 
-                    <!-- <vs-input
-           type="file"
-            placeholder="Type Your Message"
-            @change="handleFile($event)"
-          /> -->
-                    <!-- <div class="mx-2 flex items-center">
-                <input type="file" id="file-upload" cla @change="handleFile" />
+                    <feather-icon
+                        icon="PaperclipIcon"
+                        class="cursor-pointer mx-2"
+                        :title="attachmentName ? attachmentName : ''"
+                        :svgClasses="['w-6', 'h-6']"
+                        @click.prevent="popupUpload = !popupUpload"
+                    ></feather-icon>
 
-            </div> -->
+                    <vs-popup
+                        class="holamundo"
+                        title="Upload file"
+                        :active.sync="popupUpload"
+                    >
+                        <input
+                            type="file"
+                            class="w-full my-3"
+                            id="file-upload"
+                            @change="handleFile"
+                        />
+
+                        <vs-alert
+                            color="danger"
+                            title="Danger"
+                            :active="
+                                attachment
+                                    ? attachment.size > 5000000
+                                        ? true
+                                        : false
+                                    : false
+                            "
+                            class="my-3"
+                        >
+                            File size must be less than 5 megabytes.
+                        </vs-alert>
+
+                        <vs-button
+                            color="primary"
+                            type="relief"
+                            class="my-3"
+                            @click="popupUpload = !popupUpload"
+                        >
+                            <span>Ok</span>
+                        </vs-button>
+                    </vs-popup>
 
                     <vs-button
                         class="bg-primary-gradient ml-4"
                         type="filled"
                         @click="sendMsg"
+                        v-if="!isLoading"
                         >Send</vs-button
                     >
 
-                    <!-- <input type="file" id="file-upload" class="w-full"
-                        @change="handleFile"/> -->
+                    <loading-spinner v-else />
                 </div>
-
             </template>
             <template v-else>
                 <div class="flex flex-col items-center">
@@ -208,6 +330,14 @@ import ChatNavbar from "./ChatNavbar.vue";
 import UserProfile from "./UserProfile.vue";
 import VuePerfectScrollbar from "vue-perfect-scrollbar";
 import moduleChat from "@/store/chat/moduleChat.js";
+import PopupDefault from "@/components/popup/PopupDefault.vue";
+import vSelect from "vue-select";
+
+import ChatGroup from "./ChatGroup.vue";
+
+import ChatGroupLog from "./ChatGroupLog.vue";
+
+import LoadingSpinner from "@/components/Spinner.vue";
 
 export default {
     data() {
@@ -217,6 +347,8 @@ export default {
             searchContact: "",
             activeProfileSidebar: false,
             activeChatUser: null,
+            activeChatGroup: null,
+            popupActive: false,
             userProfileId: -1,
             typedMessage: "",
             attachment: null,
@@ -228,11 +360,26 @@ export default {
             clickNotClose: true,
             isChatSidebarActive: true,
             isLoggedInUserProfileView: false,
+
+            newGroup: { name: "", contacts: [] },
+            popupUpload: false,
         };
     },
     watch: {
         windowWidth() {
             this.setSidebarWidth();
+        },
+        // isLoading(){
+        //     if(this.isLoading) this.$vs.loading()
+        //     else this.$vs.loading.close()
+        // }
+        popupUpload() {
+            if (this.attachment) {
+                if (this.attachment.size > 5000000) {
+                    this.attachment = null;
+                    document.querySelector("#file-upload").value = "";
+                }
+            }
         },
     },
     computed: {
@@ -245,6 +392,18 @@ export default {
                 const unseenMsg = this.$store.getters[
                     "chat/chatUnseenMessages"
                 ](userId);
+                if (unseenMsg) return unseenMsg;
+            };
+        },
+        groupChatLastMessaged() {
+            return (groupId) =>
+                this.$store.getters["chat/groupChatLastMessaged"](groupId);
+        },
+        groupChatUnseenMessages() {
+            return (groupId) => {
+                const unseenMsg = this.$store.getters[
+                    "chat/groupChatUnseenMessages"
+                ](groupId);
                 if (unseenMsg) return unseenMsg;
             };
         },
@@ -269,6 +428,9 @@ export default {
         chatContacts() {
             return this.$store.getters["chat/chatContacts"];
         },
+        groups() {
+            return this.$store.getters["chat/groups"];
+        },
         contacts() {
             return this.$store.getters["chat/contacts"];
         },
@@ -289,24 +451,26 @@ export default {
         isActiveChatUser() {
             return (userId) => userId === this.activeChatUser;
         },
+        isActiveChatGroup() {
+            return (groupId) => groupId === this.activeChatGroup;
+        },
         windowWidth() {
             return this.$store.state.windowWidth;
         },
-        attachmentName(){
-            return this.attachment ? this.attachment.name : ''
-        }
+        attachmentName() {
+            return this.attachment ? this.attachment.name : "";
+        },
+        isLoading() {
+            return this.$store.state.isLoading;
+        },
+        csrfToken() {
+            return document.head.querySelector("meta[name='csrf-token']")
+                .content;
+        },
     },
-    //   watch: {
-    //     chatContacts: {
-    //       handler: function (val, oldVal) {
-    //         console.log('chatContacts changed')
-    //       },
-    //       deep: true
-    //     }
-    //   },
+
     methods: {
         getUserStatus(isActiveUser) {
-            // return "active"
             return isActiveUser
                 ? this.$store.state.AppActiveUser.status
                 : this.contacts[this.activeChatUser].status;
@@ -316,6 +480,7 @@ export default {
         },
         updateActiveChatUser(contactId) {
             this.activeChatUser = contactId;
+            this.activeChatGroup = null;
             if (
                 this.$store.getters["chat/chatDataOfUser"](this.activeChatUser)
             ) {
@@ -329,6 +494,13 @@ export default {
             this.toggleChatSidebar();
             this.typedMessage = "";
         },
+        updateActiveChatGroup(groupId) {
+            this.activeChatGroup = groupId;
+            this.activeChatUser = null;
+
+            this.toggleChatSidebar();
+            this.typedMessage = "";
+        },
         showProfileSidebar(userId, openOnLeft = false) {
             this.userProfileId = userId;
             this.isLoggedInUserProfileView = openOnLeft;
@@ -339,9 +511,12 @@ export default {
             this.attachment = e.target.files[0];
         },
         async sendMsg() {
-            //   if (!this.typedMessage) return;
+            if (!this.typedMessage && !this.attachment) return;
+            if (this.attachment) if (this.attachment.size > 5000000) return;
 
-            const attachment = this.attachment
+            this.$store.commit("SET_IS_LOADING", true);
+
+            const attachment = this.attachment;
             const payload = JSON.stringify({
                 isPinned: this.isChatPinned,
                 msg: {
@@ -351,19 +526,49 @@ export default {
                     isSeen: false,
                 },
                 id: this.activeChatUser,
+                group_chat_id: this.activeChatGroup,
             });
 
-            const formData = new FormData()
+            const formData = new FormData();
 
-            formData.append('payload', payload)
-            formData.append('attachment', attachment)
+            formData.append("payload", payload);
+            if (this.attachment) formData.append("attachment", attachment);
 
-            // Clean input
+            // Clean inputs
             this.typedMessage = "";
             this.attachment = null;
-            document.querySelector('#file-upload').value = ""
 
-            await this.$store.dispatch("chat/sendChatMessage", formData);
+            const fileInput = document.querySelector("#file-upload");
+            if (fileInput) fileInput.value = "";
+
+            try {
+                if (this.activeChatUser && !this.activeChatGroup) {
+                    await this.$store.dispatch(
+                        "chat/sendChatMessage",
+                        formData
+                    );
+                }
+
+                if (!this.activeChatUser && this.activeChatGroup) {
+                    await this.$store.dispatch(
+                        "chat/sendGroupChatMessage",
+                        formData
+                    );
+                }
+            } catch (err) {
+                if (err.response.status >= 400 && err.response.status < 500) {
+                    this.$vs.notify({
+                        title: "Message not sent",
+                        text:
+                            err.response.data.errors[
+                                Object.keys(err.response.data.errors)[0]
+                            ][0],
+                        color: "danger",
+                        iconPack: "feather",
+                        icon: "icon-message-square",
+                    });
+                }
+            }
 
             // Track new chat if started
 
@@ -373,8 +578,11 @@ export default {
                 await this.$store.dispatch("chat/fetchChatContacts");
                 await this.$store.dispatch("chat/fetchChats");
 
-                this.trackNewMessages();
+                // this.trackNewChatMessages();
+                // this.trackNewChats();
             }
+
+            this.$store.commit("SET_IS_LOADING", false);
 
             const scroll_el = this.$refs.chatLogPS.$el || this.$refs.chatLogPS;
             scroll_el.scrollTop = this.$refs.chatLog.scrollHeight;
@@ -395,32 +603,81 @@ export default {
         },
         trackNewChats() {
             window.Echo.private("chats").listen("NewChatStarted", async (e) => {
+                console.log('new chat started', e)
                 await this.$store.dispatch("chat/fetchChatContacts");
                 await this.$store.dispatch("chat/fetchChats");
-                this.trackNewMessages();
+                this.trackNewChatMessages();
             });
         },
-        untrackNewChats() {
-            window.Echo.leave("chats");
+        trackNewGroupChats() {
+            window.Echo.private("group-chats").listen(
+                "NewGroupChatCreated",
+                async (e) => {
+                    console.log('new group chat started:', e)
+                    await this.$store.dispatch("chat/fetchGroups");
+                    this.trackNewGroupChatMessages();
+                }
+            );
         },
-        trackNewMessages() {
+        // untrackNewChats() {
+        //     window.Echo.leave("chats");
+        // },
+
+        trackNewChatMessages() {
             //   console.log(JSON.parse(JSON.stringify(this.chats)));
             for (const prop in this.chats) {
-                console.log(this.chats[prop].chat_id);
+                // console.log(this.chats[prop].chat_id);
                 window.Echo.private("chat." + this.chats[prop].chat_id).listen(
                     "NewChatMessage",
                     (e) => {
+                        console.log('new message sent:', e);
                         this.$store.dispatch("chat/fetchChats");
                     }
                 );
             }
         },
-        untrackNewMessages() {
-            //   console.log(JSON.parse(JSON.stringify(this.chats)));
-            for (const prop in this.chats) {
-                console.log(prop);
-                window.Echo.leave("chat." + this.chats[prop].chat_id);
+        trackNewGroupChatMessages() {
+            for (const group of this.groups) {
+                window.Echo.private("group-chat." + group.id).listen(
+                    "NewGroupChatMessage",
+                    (e) => {
+                        console.log('new group chat messages:', e)
+                        // console.log(e.groupChatMessage.group_chat_id)
+                        this.$store.dispatch(
+                            "chat/fetchGroupMessages",
+                            e.groupChatMessage.group_chat_id
+                        );
+                    }
+                );
             }
+        },
+        // untrackNewChatMessages() {
+        //     //   console.log(JSON.parse(JSON.stringify(this.chats)));
+        //     for (const prop in this.chats) {
+        //         console.log(prop);
+        //         window.Echo.leave("chat." + this.chats[prop].chat_id);
+        //     }
+        // },
+        async createGroup() {
+            // this.$store.commit('SET_IS_LOADING', true)
+            this.$vs.loading();
+
+            if (this.newGroup.name == "" || this.newGroup.contacts.length < 1) {
+                return;
+            }
+
+            try {
+                await this.$store.dispatch("chat/storeGroup", this.newGroup);
+                this.popupActive = !this.popupActive;
+            } catch (err) {
+                console.log(err);
+                if (err.response.status >= 400 && err.response.status < 500) {
+                    this.newGroup.errors = err.response.data.errors;
+                }
+            }
+
+            // this.$store.commit('SET_IS_LOADING', false)
+            this.$vs.loading.close();
         },
     },
     components: {
@@ -429,16 +686,25 @@ export default {
         UserProfile,
         ChatNavbar,
         ChatLog,
+        PopupDefault,
+        vSelect,
+        ChatGroup,
+        ChatGroupLog,
+        LoadingSpinner,
     },
     async created() {
         this.$store.registerModule("chat", moduleChat);
-        this.$store.dispatch("chat/fetchContacts");
-        this.$store.dispatch("chat/fetchChatContacts");
+        await this.$store.dispatch("chat/fetchContacts");
+        await this.$store.dispatch("chat/fetchChatContacts");
+        await this.$store.dispatch("chat/fetchGroups");
         await this.$store.dispatch("chat/fetchChats");
         this.setSidebarWidth();
 
         this.trackNewChats();
-        this.trackNewMessages();
+        this.trackNewChatMessages();
+
+        this.trackNewGroupChats();
+        this.trackNewGroupChatMessages();
     },
     beforeDestroy() {
         this.$store.unregisterModule("chat");
@@ -446,9 +712,10 @@ export default {
     mounted() {
         this.$store.dispatch("chat/setChatSearchQuery", "");
     },
-    destroyed() {
-        this.untrackNewMessages();
-    },
+    // destroyed() {
+    //     this.untrackNewChats();
+    //     this.untrackNewChatMessages();
+    // },
 };
 </script>
 
@@ -456,9 +723,8 @@ export default {
 <style lang="scss">
 @import "@sass/vuexy/apps/chat.scss";
 
-#file-upload {
-   opacity: 0;
-   position: absolute;
-//    z-index: -1;
-}
+// #file-upload {
+//     opacity: 0;
+//     position: absolute;
+// }
 </style>

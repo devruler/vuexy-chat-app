@@ -52,7 +52,6 @@ const actions = {
       commit('UPDATE_USER_INFO', payload)
     },
 
-
 }
 
 export default actions

@@ -20,5 +20,8 @@ export default {
   chatContacts: [],
 
   // Stores Chat data(log)
-  chats: {}
+  chats: {},
+
+  // Stores Chat Contacts
+  groups: [],
 }

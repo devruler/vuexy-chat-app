@@ -2,21 +2,23 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Attachment;
 use App\Chat;
 use App\Events\NewChatMessage;
 use App\Events\NewChatStarted;
 use App\Http\Controllers\Controller;
-use App\Message;
 use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Broadcast;
 
 class ChatController extends Controller
 {
     public function storeMsg(Request $request)
     {
+        // validate file
+        $request->validate([
+            'attachment' => 'sometimes|file|mimes:txt,pdf,doc,ppt,xls,docx,pptx,xlsx,rar,zip,jpg,jpeg,png|max:5000'
+        ]);
+
         $payload = json_decode($request->payload);
 
         // Get recipient user
@@ -67,11 +69,11 @@ class ChatController extends Controller
             $name = uniqid() . '.' . $ext;
             $path = '/storage/attachments/' .  $name;
             $file->storePubliclyAs('public', '/attachments/' . $name);
-            $attachment = Attachment::create([
+
+            $message->attachment()->create([
                 'name' => $name,
                 'path' => $path,
                 'extension' => $ext,
-                'message_id' => $message->id
             ]);
         }
 
@@ -129,6 +131,7 @@ class ChatController extends Controller
 
         return $chatContacts;
     }
+
 
     public function markAllSeen(Request $request)
     {

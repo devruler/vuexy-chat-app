@@ -18,3 +18,4 @@ Route::get('/pages/login', 'ApplicationController')->name('login');
 Route::middleware(['auth'])->group(function () {
     Route::get('/{any}', 'ApplicationController')->where('any', '.*');
 });
+

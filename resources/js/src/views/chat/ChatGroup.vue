@@ -1,0 +1,62 @@
+<!-- =========================================================================================
+    File Name: Chatgroup.vue
+    Description: Chat contact - single component for chat
+    ----------------------------------------------------------------------------------------
+    Item Name: Vuexy - Vuejs, HTML & Laravel Admin Dashboard Template
+      Author: Pixinvent
+    Author URL: http://www.themeforest.net/user/pixinvent
+========================================================================================== -->
+
+<template>
+    <div class="chat__contact flex items-center px-2 pt-4 pb-2" :class="{'bg-primary-gradient text-white shadow-lg': isActiveChatGroup}">
+        <div class="contact__avatar mr-1">
+            <vs-avatar class="border-2 border-solid border-white" src="https://via.placeholder.com/150?text=G" size="42px" />
+        </div>
+        <div class="contact__container w-full flex items-center justify-between overflow-hidden">
+            <div class="contact__info flex flex-col truncate w-5/6">
+                <h5 class="font-semibold" :class="{'text-white': isActiveChatGroup}">{{ group.name }}</h5>
+                <span class="truncate">{{ lastMessage }}</span>
+            </div>
+
+            <div class="chat__contact__meta flex self-start flex-col items-end w-1/6">
+                <span class="whitespace-no-wrap">{{ lastMessaged | date }}</span>
+                <!-- <vs-chip class="number" color="primary" v-if="unseenMsg">{{ unseenMsg }}</vs-chip> -->
+            </div>
+        </div>
+    </div>
+</template>
+
+<script>
+export default {
+  props: {
+    group          : { type: Object,  required: true },
+    isActiveChatGroup : { type: Boolean },
+    lastMessaged     : { type: String,  default : '' },
+    // lastMessage : { type: String, default: ''},
+    showLastMsg      : { type: Boolean, default: false },
+    unseenMsg        : { type: Number,  default : 0 }
+  },
+//   data(){
+//       return {
+//           lastMessage: ""
+//       }
+//   },
+  computed: {
+    //   avatarFromName(){
+    //       return 'https://ui-avatars.com/api/?name=' + this.group.name.split(' ').join('+') + '&background=random'
+    //   },
+    lastMessage(){
+        return this.$store.getters['chat/groupChatLastMessaged'](this.group.id) ? this.$store.getters['chat/groupChatLastMessaged'](this.group.id).content : ''
+    }
+
+  },
+  mounted(){
+    //   setInterval(() => {
+    //       console.log(this.lastMessage)
+    //   }, 500)
+    // console.log(this.$store.getters['chat/groupChatLastMessaged'](this.group.id).content)
+    // this.lastMessage = this.$store.getters['chat/groupChatLastMessaged'](this.group.id).content
+}
+}
+</script>
+

@@ -20,6 +20,10 @@ class Message extends Model
         return $this->belongsTo(Chat::class);
     }
 
+    public function groupChat(){
+        return $this->belongsTo(GroupChat::class);
+    }
+
     public function user(){
         return $this->belongsTo(User::class);
     }

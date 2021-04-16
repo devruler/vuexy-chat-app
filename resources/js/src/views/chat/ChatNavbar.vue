@@ -8,8 +8,8 @@
 ========================================================================================== -->
 
 <template>
-    <div v-if="userId != null" class="chat__header">
-        <vs-navbar class="p-4 flex navbar-custom" color="white" type="flat">
+    <div v-if="userId || groupId" class="chat__header">
+        <vs-navbar class="p-4 flex navbar-custom" color="white" type="flat" v-if="userId">
             <div class="relative flex mr-4">
                 <feather-icon
                     icon="MenuIcon"
@@ -28,7 +28,51 @@
                     :class="'bg-' + getStatusColor(false)"
                 ></div>
             </div>
-            <h6>{{ userDetails.name }}</h6>
+            <h6>{{ userDetails.name}}</h6>
+            <vs-spacer></vs-spacer>
+
+
+
+            <feather-icon
+                icon="VideoIcon"
+                class="cursor-pointer mr-2"
+                :svgClasses="['w-6', 'h-6']"
+            ></feather-icon>
+            <feather-icon
+                icon="SearchIcon"
+                class="cursor-pointer mr-2"
+                :svgClasses="['w-6', 'h-6']"
+            ></feather-icon>
+            <feather-icon
+                icon="StarIcon"
+                class="cursor-pointer"
+                :svgClasses="[
+                    { 'text-warning stroke-current': isPinnedLocal },
+                    'w-6',
+                    'h-6',
+                ]"
+                @click.stop="isPinnedLocal = !isPinnedLocal"
+            ></feather-icon>
+        </vs-navbar>
+
+        <vs-navbar class="p-4 flex navbar-custom" color="white" type="flat" v-if="groupId">
+            <div class="relative flex mr-4">
+                <feather-icon
+                    icon="MenuIcon"
+                    class="mr-4 cursor-pointer"
+                    v-if="isSidebarCollapsed"
+                    @click.stop="$emit('openContactsSidebar')"
+                />
+                <vs-avatar
+                    class="m-0 border-2 border-solid border-white"
+                    size="40px"
+                    :src="'https://via.placeholder.com/150?text=G'"
+                />
+                <div
+                    class="h-3 w-3 border-white border border-solid rounded-full absolute right-0 bottom-0"
+                ></div>
+            </div>
+            <h6>{{ groupDetails.name }}</h6>
             <vs-spacer></vs-spacer>
 
 
@@ -62,7 +106,11 @@ export default {
     props: {
         userId: {
             type: Number,
-            required: true,
+            default: null,
+        },
+        groupId: {
+            type: Number,
+            default: null
         },
         isPinnedProp: {
             type: Boolean,
@@ -99,6 +147,9 @@ export default {
         },
         userDetails() {
             return this.$store.getters["chat/contact"](this.userId);
+        },
+        groupDetails() {
+            return this.$store.getters["chat/chatGroup"](this.groupId);
         },
         getStatusColor() {
             return (isActiveUser) => {

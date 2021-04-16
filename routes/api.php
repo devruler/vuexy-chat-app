@@ -18,8 +18,12 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
+Route::prefix('users')->middleware('auth:api')->group(function () {
+    Route::put('current-user', 'UserController@updateCurrentUser');
+});
 
 Route::prefix('/apps/chat')->middleware('auth:api')->group(function () {
+    // Private chats
     Route::post('msg', 'Api\ChatController@storeMsg');
     Route::get('contacts', 'Api\ChatController@getContacts');
     Route::get('chats', 'Api\ChatController@getChats');
@@ -27,7 +31,11 @@ Route::prefix('/apps/chat')->middleware('auth:api')->group(function () {
     Route::post('mark-all-seen', 'Api\ChatController@markAllSeen');
     Route::post('set-pinned', 'Api\ChatController@setPinned');
 
-
+    // Group chats
+    Route::post('groups/msg', 'Api\GroupChatController@storeGroupChatMsg');
+    Route::get('groups', 'Api\GroupChatController@getChatGroups');
+    Route::post('groups', 'Api\GroupChatController@storeGroup');
+    Route::get('groups/{groupChat}', 'Api\GroupChatController@getGroupChatMessages');
 });
 
 Route::prefix('/notifications')->middleware('auth:api')->group(function () {
