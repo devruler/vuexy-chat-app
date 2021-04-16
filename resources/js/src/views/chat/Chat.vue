@@ -32,12 +32,16 @@
 
             <div class="chat__profile-search flex p-4">
                 <div class="relative inline-flex">
-                    <vs-avatar
-                        v-if="activeUser.photo"
+                    <!-- <vs-avatar
                         class="m-0 border-2 border-solid border-white"
-                        :src="activeUser.photo"
+                        :src="activeUser.photo || ('https://ui-avatars.com/api/?name=' + activeUser.name)"
                         size="40px"
                         @click="showProfileSidebar(Number(activeUser.id), true)"
+                    /> -->
+                    <vs-avatar
+                        class="m-0 border-2 border-solid border-white"
+                        :src="activeUser.photo || ('https://ui-avatars.com/api/?name=' + activeUser.name)"
+                        size="40px"
                     />
                     <div
                         class="h-3 w-3 border-white border border-solid rounded-full absolute right-0 bottom-0"
@@ -329,7 +333,7 @@ import ChatLog from "./ChatLog.vue";
 import ChatNavbar from "./ChatNavbar.vue";
 import UserProfile from "./UserProfile.vue";
 import VuePerfectScrollbar from "vue-perfect-scrollbar";
-import moduleChat from "@/store/chat/moduleChat.js";
+// import moduleChat from "@/store/chat/moduleChat.js";
 import PopupDefault from "@/components/popup/PopupDefault.vue";
 import vSelect from "vue-select";
 
@@ -693,7 +697,7 @@ export default {
         LoadingSpinner,
     },
     async created() {
-        this.$store.registerModule("chat", moduleChat);
+        // this.$store.registerModule("chat", moduleChat);
         await this.$store.dispatch("chat/fetchContacts");
         await this.$store.dispatch("chat/fetchChatContacts");
         await this.$store.dispatch("chat/fetchGroups");

@@ -213,5 +213,22 @@ export default {
                     reject(error)
                 })
         })
+    },
+
+    updateUserStatus({
+        commit
+    }, payload){
+
+        return new Promise((resolve, reject) => {
+            axios.put('/api/users/current-user', payload)
+            .then((response) => {
+                commit('UPDATE_USER_INFO', payload, { root: true })
+                console.log(response)
+                resolve(response)
+            })
+            .catch((error) => {
+                reject(error)
+            })
+          })
     }
 }

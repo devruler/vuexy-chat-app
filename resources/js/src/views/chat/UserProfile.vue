@@ -30,7 +30,7 @@
                 <div class="relative inline-flex mx-auto mb-5 mt-6">
                     <vs-avatar
                         class="m-0 border-white border-2 border-solid shadow-md"
-                        :src="chatUser.photo"
+                        :src="chatUser.photo || ('https://ui-avatars.com/api/?name=' + chatUser.name)"
                         size="70px"
                     />
                     <div
@@ -49,7 +49,7 @@
                 :key="$vs.rtl"
             >
                 <div class="p-8">
-                    <form @submit.prevent="updateUserInfo">
+                    <form @submit.prevent="updateUserStatus">
                         <h6 class="mb-2" :class="{ 'ml-4': isLoggedInUser }">
                             About
                         </h6>
@@ -101,7 +101,7 @@
                                 </li>
                             </ul>
                         </div>
-                        <vs-button button="submit" type="filled" color="primary"
+                        <vs-button button="submit" type="filled" color="primary" class="my-3"
                             >Update</vs-button
                         >
                     </form>
@@ -146,20 +146,15 @@ export default {
       get ()      { return this.active },
       set (value) { this.$emit('closeProfileSidebar', value) }
     },
-    // about: {
-    //   get ()      { return this.chatUser.about },
-    //   set (value) { this.$store.dispatch('updateUserInfo', { about: value }) }
-    // },
-    // status: {
-    //   get ()      { return this.chatUser.status },
-    //   set (value) { this.$store.dispatch('updateUserInfo', { status: value }) }
-    // },
-    about() {
-      return this.chatUser.about
+    about: {
+      get ()      { return this.chatUser.about },
+      set (value) { this.$store.dispatch('updateUserInfo', { about: value }) }
     },
-    status() {
-       return this.chatUser.status
+    status: {
+      get ()      { return this.chatUser.status },
+      set (value) { this.$store.dispatch('updateUserInfo', { status: value }) }
     },
+
     statusColor () {
       const userStatus = this.chatUser.status
 

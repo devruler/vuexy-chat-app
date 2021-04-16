@@ -16,15 +16,23 @@ import colors from "@/../themeConfig.js"
 // /////////////////////////////////////////////
 
 // *From Auth - Data will be received from auth provider
-const userDefaults = {
-  id         : 0,          // From Auth
-  name : "John Doe", // From Auth
-  about       : "Dessert chocolate cake lemon drops jujubes. Biscuit cupcake ice cream bear claw brownie brownie marshmallow.",
-  photo    : require("@assets/images/portrait/small/avatar-s-11.jpg"), // From Auth
-  status      : "online",
-  userRole    : "admin"
-}
+// const userDefaults = {
+//   id         : 0,          // From Auth
+//   name : "John Doe", // From Auth
+//   about       : "Dessert chocolate cake lemon drops jujubes. Biscuit cupcake ice cream bear claw brownie brownie marshmallow.",
+//   photo    : require("@assets/images/portrait/small/avatar-s-11.jpg"), // From Auth
+//   status      : "online",
+//   userRole    : "admin"
+// }
 
+const userDefaults = {
+    id         : 0,          // From Auth
+    name : "", // From Auth
+    about       : "",
+    photo    : null, // From Auth
+    status      : "online",
+    // userRole    : "admin"
+  }
 
 // Check if device is touch device
 // This is used to remove perfect scrollbar from touch devices

@@ -16,7 +16,9 @@
 
 <script>
 import themeConfig from '@/../themeConfig.js'
-import Axios from 'axios'
+import axios from 'axios'
+
+// import moduleChat from '@/store/chat/moduleChat'
 
 export default {
   data () {
@@ -58,15 +60,36 @@ export default {
       this.$store.commit('UPDATE_WINDOW_SCROLL_Y', window.scrollY)
     },
     getUserInfo(){
-        Axios.get('/api/user')
+        axios.get('/api/user')
         .then(res =>{
             let data = res.data
-            this.$store.dispatch('updateUserInfo', { id: data.id, name: data.name, photo: ("https://ui-avatars.com/api/?name=" + data.name.split(' ').join('+'))})
+            this.$store.dispatch('updateUserInfo', data)
         })
         .catch(err => console.log(err))
-    }
+    },
+    listenOnlineOffline() {
+        Echo.join('user-status')
+            .joining((user) => {
+                axios.put('/api/users/online/'+ user.id, {})
+            })
+            .leaving((user) => {
+                axios.put('/api/users/offline/'+ user.id, {})
+            })
+            .listen('UserOnline', (e) => {
+                // this.friend = e.user;
+                console.log('new user online', e)
+                if(this.$store.state.AppActiveUser.id === e.user.id) this.$store.commit('UPDATE_USER_INFO', e.user)
+                else this.$store.commit('chat/UPDATE_CONTACT_STATUS', e.user)
+            })
+            .listen('UserOffline', (e) => {
+                console.log('new user offline', e)
+                if(this.$store.state.AppActiveUser.id === e.user.id) this.$store.commit('UPDATE_USER_INFO', e.user)
+                else this.$store.commit('chat/UPDATE_CONTACT_STATUS', e.user)
+            });
+    },
   },
   mounted () {
+    //   this.$store.registerModule("chat", moduleChat);
     this.toggleClassInBody(themeConfig.theme)
     this.$store.commit('UPDATE_WINDOW_WIDTH', window.innerWidth)
 
@@ -76,6 +99,9 @@ export default {
 
     // get user info
     this.getUserInfo()
+
+    // Listen and update online and offline status
+    this.listenOnlineOffline()
   },
   async created () {
     const dir = this.$vs.rtl ? 'rtl' : 'ltr'

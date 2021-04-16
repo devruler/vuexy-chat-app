@@ -16,7 +16,7 @@ import getters from "./getters"
 import mutations from "./mutations"
 import actions from "./actions"
 
-// import moduleChat from './chat/moduleChat.js'
+import moduleChat from './chat/moduleChat.js'
 
 Vue.use(Vuex)
 
@@ -28,7 +28,7 @@ export default new Vuex.Store({
     modules: {
         // todo: moduleTodo,
         // calendar: moduleCalendar,
-        // chat: moduleChat,
+        chat: moduleChat,
         // email: moduleEmail,
         // auth: moduleAuth,
         // eCommerce: moduleECommerce

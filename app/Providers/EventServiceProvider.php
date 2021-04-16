@@ -5,6 +5,8 @@ namespace App\Providers;
 use App\Events\NewChatStarted;
 use App\Events\NewGroupChatCreated;
 use App\Events\NewGroupChatMessage;
+use App\Events\UserOffline;
+use App\Events\UserOnline;
 use App\Listeners\SendChatMessageNotification;
 use App\Listeners\SendGroupChatMessageNotification;
 use App\Listeners\SendNewChatStartedNotification;
@@ -36,6 +38,12 @@ class EventServiceProvider extends ServiceProvider
         ],
         NewGroupChatMessage::class => [
             SendGroupChatMessageNotification::class,
+        ],
+        UserOnline::class => [
+
+        ],
+        UserOffline::class => [
+
         ]
     ];
 

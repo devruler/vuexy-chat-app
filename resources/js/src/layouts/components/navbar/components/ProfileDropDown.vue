@@ -1,5 +1,5 @@
 <template>
-  <div class="the-navbar__user-meta flex items-center" v-if="activeUserInfo.name">
+  <div class="the-navbar__user-meta flex items-center">
 
     <div class="text-right leading-tight hidden sm:block">
       <p class="font-semibold">{{ activeUserInfo.name }}</p>
@@ -9,7 +9,26 @@
     <vs-dropdown vs-custom-content vs-trigger-click class="cursor-pointer">
 
       <div class="con-img ml-3">
-        <img v-if="activeUserInfo.photo" key="onlineImg" :src="activeUserInfo.photo" alt="user-img" width="40" height="40" class="rounded-full shadow-md cursor-pointer block" />
+        <!-- <img v-if="activeUserInfo.photo" key="onlineImg" :src="activeUserInfo.photo || ('https://ui-avatars.com/api/?name=' + activeUserInfo.name)" alt="user-img" width="40" height="40" class="rounded-full shadow-md cursor-pointer block" /> -->
+        <!-- <img key="onlineImg" :src="activeUserInfo.photo || ('https://ui-avatars.com/api/?name=' + activeUserInfo.name)" alt="user-img" width="40" height="40" class="rounded-full shadow-md cursor-pointer block" /> -->
+        <div class="relative inline-flex">
+                    <!-- <vs-avatar
+                        class="m-0 border-2 border-solid border-white"
+                        :src="activeUser.photo || ('https://ui-avatars.com/api/?name=' + activeUser.name)"
+                        size="40px"
+                        @click="showProfileSidebar(Number(activeUser.id), true)"
+                    /> -->
+                    <vs-avatar
+                        key="onlineImg"
+                        class="m-0 border-2 border-solid border-white shadow-md cursor-pointer block"
+                        :src="activeUserInfo.photo || ('https://ui-avatars.com/api/?name=' + activeUserInfo.name)"
+                        size="40px"
+                    />
+                    <div
+                        class="h-3 w-3 border-white border border-solid rounded-full absolute right-0 bottom-0"
+                        :class="'bg-' + getStatusColor()"
+                    ></div>
+                </div>
       </div>
 
       <vs-dropdown-menu class="vx-navbar-dropdown">
@@ -60,7 +79,22 @@ export default {
   computed: {
     activeUserInfo () {
       return this.$store.state.AppActiveUser
-    }
+    },
+    getStatusColor() {
+            return () => {
+                const userStatus = this.activeUserInfo.status;
+
+                if (userStatus === "online") {
+                    return "success";
+                } else if (userStatus === "do not disturb") {
+                    return "danger";
+                } else if (userStatus === "away") {
+                    return "warning";
+                } else {
+                    return "grey";
+                }
+            };
+        },
   },
   methods: {
     logout () {

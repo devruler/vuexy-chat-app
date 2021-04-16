@@ -43,6 +43,11 @@ export default {
   UPDATE_CONTACTS (state, contacts) {
     state.contacts = contacts
   },
+
+  UPDATE_CONTACT_STATUS (state, contact) {
+    state.contacts = state.contacts.map((item) => item.id === contact.id ? contact : item)
+  },
+
   UPDATE_CHAT_CONTACTS (state, chatContacts) {
     state.chatContacts = chatContacts
   },

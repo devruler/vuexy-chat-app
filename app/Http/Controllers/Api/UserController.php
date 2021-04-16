@@ -2,13 +2,35 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Events\UserOffline;
+use App\Events\UserOnline;
+use App\Events\UserStatusUpdated;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\UpdateUserRequest;
+use App\User;
+use Illuminate\Http\Request;
 
 class UserController extends Controller
 {
-    public function updateCurrentUser(UpdateUserRequest $request){
+    public function updateUserOnline(User $user){
 
-        return auth()->user()->update($request->validated());
+        $user->update([
+            'status' => 'online'
+        ]);
+
+        broadcast(new UserOnline($user));
+
+        return $user;
     }
+
+    public function updateUserOffline(User $user){
+
+        $user->update([
+            'status' => 'offline'
+        ]);
+
+        broadcast(new UserOffline($user));
+
+        return $user;
+    }
+
 }
