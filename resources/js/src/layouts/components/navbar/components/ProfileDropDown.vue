@@ -1,17 +1,15 @@
 <template>
-  <div class="the-navbar__user-meta flex items-center">
+    <div class="the-navbar__user-meta flex items-center">
+        <div class="text-right leading-tight hidden sm:block">
+            <p class="font-semibold">{{ activeUserInfo.name }}</p>
+            <small>Available</small>
+        </div>
 
-    <div class="text-right leading-tight hidden sm:block">
-      <p class="font-semibold">{{ activeUserInfo.name }}</p>
-      <small>Available</small>
-    </div>
-
-    <vs-dropdown vs-custom-content vs-trigger-click class="cursor-pointer">
-
-      <div class="con-img ml-3">
-        <!-- <img v-if="activeUserInfo.photo" key="onlineImg" :src="activeUserInfo.photo || ('https://ui-avatars.com/api/?name=' + activeUserInfo.name)" alt="user-img" width="40" height="40" class="rounded-full shadow-md cursor-pointer block" /> -->
-        <!-- <img key="onlineImg" :src="activeUserInfo.photo || ('https://ui-avatars.com/api/?name=' + activeUserInfo.name)" alt="user-img" width="40" height="40" class="rounded-full shadow-md cursor-pointer block" /> -->
-        <div class="relative inline-flex">
+        <vs-dropdown vs-custom-content vs-trigger-click class="cursor-pointer">
+            <div class="con-img ml-3">
+                <!-- <img v-if="activeUserInfo.photo" key="onlineImg" :src="activeUserInfo.photo || ('https://ui-avatars.com/api/?name=' + activeUserInfo.name)" alt="user-img" width="40" height="40" class="rounded-full shadow-md cursor-pointer block" /> -->
+                <!-- <img key="onlineImg" :src="activeUserInfo.photo || ('https://ui-avatars.com/api/?name=' + activeUserInfo.name)" alt="user-img" width="40" height="40" class="rounded-full shadow-md cursor-pointer block" /> -->
+                <div class="relative inline-flex">
                     <!-- <vs-avatar
                         class="m-0 border-2 border-solid border-white"
                         :src="activeUser.photo || ('https://ui-avatars.com/api/?name=' + activeUser.name)"
@@ -21,7 +19,11 @@
                     <vs-avatar
                         key="onlineImg"
                         class="m-0 border-2 border-solid border-white shadow-md cursor-pointer block"
-                        :src="activeUserInfo.photo || ('https://ui-avatars.com/api/?name=' + activeUserInfo.name)"
+                        :src="
+                            activeUserInfo.photo ||
+                            'https://ui-avatars.com/api/?name=' +
+                                activeUserInfo.name
+                        "
                         size="40px"
                     />
                     <div
@@ -29,58 +31,74 @@
                         :class="'bg-' + getStatusColor()"
                     ></div>
                 </div>
-      </div>
+            </div>
 
-      <vs-dropdown-menu class="vx-navbar-dropdown">
-        <ul style="min-width: 9rem">
+            <vs-dropdown-menu class="vx-navbar-dropdown">
+                <ul style="min-width: 9rem">
+                    <li
+                        class="flex py-2 px-4 cursor-pointer hover:bg-primary hover:text-white"
+                    >
+                        <feather-icon icon="UserIcon" svgClasses="w-4 h-4" />
+                        <span class="ml-2">Profile</span>
+                    </li>
 
-          <li class="flex py-2 px-4 cursor-pointer hover:bg-primary hover:text-white">
-            <feather-icon icon="UserIcon" svgClasses="w-4 h-4" />
-            <span class="ml-2">Profile</span>
-          </li>
+                    <li
+                        class="flex py-2 px-4 cursor-pointer hover:bg-primary hover:text-white"
+                    >
+                        <feather-icon icon="MailIcon" svgClasses="w-4 h-4" />
+                        <span class="ml-2">Inbox</span>
+                    </li>
 
-          <li class="flex py-2 px-4 cursor-pointer hover:bg-primary hover:text-white">
-            <feather-icon icon="MailIcon" svgClasses="w-4 h-4" />
-            <span class="ml-2">Inbox</span>
-          </li>
+                    <li
+                        class="flex py-2 px-4 cursor-pointer hover:bg-primary hover:text-white"
+                    >
+                        <feather-icon
+                            icon="CheckSquareIcon"
+                            svgClasses="w-4 h-4"
+                        />
+                        <span class="ml-2">Tasks</span>
+                    </li>
 
-          <li class="flex py-2 px-4 cursor-pointer hover:bg-primary hover:text-white">
-            <feather-icon icon="CheckSquareIcon" svgClasses="w-4 h-4" />
-            <span class="ml-2">Tasks</span>
-          </li>
+                    <li
+                        class="flex py-2 px-4 cursor-pointer hover:bg-primary hover:text-white"
+                    >
+                        <feather-icon
+                            icon="MessageSquareIcon"
+                            svgClasses="w-4 h-4"
+                        />
+                        <span class="ml-2">Chat</span>
+                    </li>
 
-          <li class="flex py-2 px-4 cursor-pointer hover:bg-primary hover:text-white">
-            <feather-icon icon="MessageSquareIcon" svgClasses="w-4 h-4" />
-            <span class="ml-2">Chat</span>
-          </li>
+                    <li
+                        class="flex py-2 px-4 cursor-pointer hover:bg-primary hover:text-white"
+                    >
+                        <feather-icon icon="HeartIcon" svgClasses="w-4 h-4" />
+                        <span class="ml-2">Wish List</span>
+                    </li>
 
-          <li class="flex py-2 px-4 cursor-pointer hover:bg-primary hover:text-white">
-            <feather-icon icon="HeartIcon" svgClasses="w-4 h-4" />
-            <span class="ml-2">Wish List</span>
-          </li>
+                    <vs-divider class="m-1" />
 
-          <vs-divider class="m-1" />
-
-          <li
-            class="flex py-2 px-4 cursor-pointer hover:bg-primary hover:text-white"
-            @click="logout">
-            <feather-icon icon="LogOutIcon" svgClasses="w-4 h-4" />
-            <span class="ml-2">Logout</span>
-          </li>
-        </ul>
-      </vs-dropdown-menu>
-    </vs-dropdown>
-  </div>
+                    <li
+                        class="flex py-2 px-4 cursor-pointer hover:bg-primary hover:text-white"
+                        @click="logout"
+                    >
+                        <feather-icon icon="LogOutIcon" svgClasses="w-4 h-4" />
+                        <span class="ml-2">Logout</span>
+                    </li>
+                </ul>
+            </vs-dropdown-menu>
+        </vs-dropdown>
+    </div>
 </template>
 
 <script>
-import Axios from 'axios'
+import axios from "axios";
 export default {
-  computed: {
-    activeUserInfo () {
-      return this.$store.state.AppActiveUser
-    },
-    getStatusColor() {
+    computed: {
+        activeUserInfo() {
+            return this.$store.state.AppActiveUser;
+        },
+        getStatusColor() {
             return () => {
                 const userStatus = this.activeUserInfo.status;
 
@@ -95,17 +113,23 @@ export default {
                 }
             };
         },
-  },
-  methods: {
-    logout () {
-      localStorage.removeItem('userInfo')
+    },
+    methods: {
+        logout() {
+            localStorage.removeItem("userInfo");
 
-      // This is just for demo Purpose. If user clicks on logout -> redirect
-      Axios.post('/logout')
-      .then(() => window.location.href = '/pages/login')
-      .catch(err => console.log(err))
-    //   this.$router.push('/pages/login').catch(() => {})
-    }
-  }
-}
+            // If user clicks on logout -> set offline -> redirect
+            // axios.put("/api/users/offline" + this.activeUserInfo).then(() => {
+            //     axios.post("/logout")
+            //         .then(() => (window.location.href = "/pages/login"))
+            //         .catch((err) => console.log(err));
+            // });
+            axios.post("/logout")
+                    .then(() => (window.location.href = "/pages/login"))
+                    .catch((err) => console.log(err));
+
+            //   this.$router.push('/pages/login').catch(() => {})
+        },
+    },
+};
 </script>

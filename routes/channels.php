@@ -18,17 +18,11 @@ Broadcast::channel('App.User.{id}', function ($user, $id) {
 });
 
 Broadcast::channel('chat.{chat_id}', function ($user, $chat_id) {
-    return [
-        'id' => $user->id,
-        'name' => $user->name,
-    ];
+    return $user;
 });
 
 Broadcast::channel('chats', function ($user) {
-    return [
-        'id' => $user->id,
-        'name' => $user->name,
-    ];
+    return $user;
 });
 
 Broadcast::channel('group-chat.{group_id}', function ($user, $group_id) {

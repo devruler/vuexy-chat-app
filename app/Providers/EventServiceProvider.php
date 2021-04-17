@@ -11,6 +11,10 @@ use App\Listeners\SendChatMessageNotification;
 use App\Listeners\SendGroupChatMessageNotification;
 use App\Listeners\SendNewChatStartedNotification;
 use App\Listeners\SendNewGroupChatCreatedNotification;
+use App\Listeners\SetUserOffline;
+use App\Listeners\SetUserOnline;
+use Illuminate\Auth\Events\Login;
+use Illuminate\Auth\Events\Logout;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
@@ -27,24 +31,30 @@ class EventServiceProvider extends ServiceProvider
         Registered::class => [
             SendEmailVerificationNotification::class,
         ],
-        "App\Events\NewChatMessage" => [
-            SendChatMessageNotification::class,
+        Login::class => [
+            SetUserOnline::class
         ],
-        NewChatStarted::class => [
-            SendNewChatStartedNotification::class,
-        ],
-        NewGroupChatCreated::class => [
-            SendNewGroupChatCreatedNotification::class,
-        ],
-        NewGroupChatMessage::class => [
-            SendGroupChatMessageNotification::class,
-        ],
-        UserOnline::class => [
-
-        ],
-        UserOffline::class => [
-
+        Logout::class => [
+            SetUserOffline::class
         ]
+        // "App\Events\NewChatMessage" => [
+        //     SendChatMessageNotification::class,
+        // ],
+        // NewChatStarted::class => [
+        //     SendNewChatStartedNotification::class,
+        // ],
+        // NewGroupChatCreated::class => [
+        //     SendNewGroupChatCreatedNotification::class,
+        // ],
+        // NewGroupChatMessage::class => [
+        //     SendGroupChatMessageNotification::class,
+        // ],
+        // UserOnline::class => [
+
+        // ],
+        // UserOffline::class => [
+
+        // ]
     ];
 
     /**

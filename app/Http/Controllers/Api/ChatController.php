@@ -79,6 +79,8 @@ class ChatController extends Controller
 
         // Broadcast the new message to other users
 
+        $message->load('chat', 'attachment');
+
         broadcast(new NewChatMessage($message))->toOthers();
 
         return $message;

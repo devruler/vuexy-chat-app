@@ -61,7 +61,6 @@ export default {
             axios.post('/api/apps/chat/groups/msg', payload)
                 .then((response) => {
                     console.log(response)
-                    commit('SEND_GROUP_CHAT_MESSAGE', response.data)
                     resolve(response)
                 })
                 .catch((error) => {
@@ -218,7 +217,6 @@ export default {
     updateUserStatus({
         commit
     }, payload){
-
         return new Promise((resolve, reject) => {
             axios.put('/api/users/current-user', payload)
             .then((response) => {
@@ -230,5 +228,21 @@ export default {
                 reject(error)
             })
           })
+    },
+
+    addNewChatMessage({state, commit, rootState}, payload){
+        let msg = {
+            textContent: payload.content,
+            isSeen: payload.is_seen,
+            isSent: rootState.AppActiveUser.id === payload.user_id ? payload.is_sent : !payload.is_sent,
+            time: payload.created_at,
+            attachment: payload.attachment,
+        }
+        const chatUser = payload.chat.sender_id === rootState.AppActiveUser.id ? payload.chat.recipient_id : payload.chat.sender_id
+        commit('ADD_NEW_CHAT_MESSAGE', {msg, chatUser})
+    },
+
+    addNewGroupChatMessage({state, commit, rootState}, payload){
+        commit('ADD_NEW_GROUP_CHAT_MESSAGE', payload)
     }
 }

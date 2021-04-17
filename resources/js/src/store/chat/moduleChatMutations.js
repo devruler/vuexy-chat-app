@@ -35,7 +35,7 @@ export default {
     }
   },
 
-  SEND_GROUP_CHAT_MESSAGE (state, payload) {
+  ADD_NEW_GROUP_CHAT_MESSAGE (state, payload) {
       // Push msg to existing group chat
       state.groups.find(group => group.id === payload.group_chat_id).messages.push(payload)
   },
@@ -46,6 +46,7 @@ export default {
 
   UPDATE_CONTACT_STATUS (state, contact) {
     state.contacts = state.contacts.map((item) => item.id === contact.id ? contact : item)
+    state.chatContacts = state.chatContacts.map((item) => item.id === contact.id ? contact : item)
   },
 
   UPDATE_CHAT_CONTACTS (state, chatContacts) {
@@ -57,6 +58,14 @@ export default {
   UPDATE_GROUPS (state, groups) {
     state.groups = groups
   },
+
+  ADD_NEW_CHAT_MESSAGE (state, payload){
+    state.chats[payload.chatUser]['msg'].push(payload.msg)
+  },
+
+//   ADD_NEW_GROUP_CHAT_MESSAGE (state, payload){
+//     state.groups = state.groups.map(group => group.id === payload.group_chat_id ? group.messages.push(payload) : group)
+//   },
 
   UPDATE_GROUP_MESSAGES (state, updatedGroup) {
     state.groups = state.groups.map((group) => group.id === updatedGroup.id ? updatedGroup : group)

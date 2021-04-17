@@ -86,7 +86,7 @@ export default {
             );
         },
         getStatusColor() {
-            return (isActiveUser) => {
+            return () => {
                 const userStatus = this.contact.status;
 
                 if (userStatus === "online") {

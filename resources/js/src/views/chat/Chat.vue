@@ -269,22 +269,19 @@
                             type="file"
                             class="w-full my-3"
                             id="file-upload"
+
                             @change="handleFile"
                         />
 
                         <vs-alert
                             color="danger"
-                            title="Danger"
+                            title="Error"
                             :active="
-                                attachment
-                                    ? attachment.size > 5000000
-                                        ? true
-                                        : false
-                                    : false
+                                errors.hasOwnProperty('attachment')
                             "
                             class="my-3"
                         >
-                            File size must be less than 5 megabytes.
+                            {{ this.errors.attachment}}
                         </vs-alert>
 
                         <vs-button
@@ -356,6 +353,7 @@ export default {
             userProfileId: -1,
             typedMessage: "",
             attachment: null,
+            errors: {},
             isChatPinned: false,
             settings: {
                 maxScrollbarLength: 60,
@@ -511,8 +509,19 @@ export default {
             this.activeProfileSidebar = !this.activeProfileSidebar;
         },
         handleFile(e) {
-            console.log(e);
+            // console.log(e);
+
             this.attachment = e.target.files[0];
+
+            const allowedExtensions = ['txt','pdf','doc','ppt','xls','docx','pptx','xlsx','rar','zip','jpg','jpeg','png']
+
+            if(!allowedExtensions.includes(this.attachment.name.split('.').pop())){
+                this.errors.attachment = 'File type is not allowed.'
+            }else if(this.attachment.size > 5000000){
+                this.errors.attachment = 'File size must be lower than 5 megabytes.'
+            }else{
+                delete this.errors.attachment
+            }
         },
         async sendMsg() {
             if (!this.typedMessage && !this.attachment) return;
@@ -521,7 +530,7 @@ export default {
             this.$store.commit("SET_IS_LOADING", true);
 
             const attachment = this.attachment;
-            const payload = JSON.stringify({
+            const chatMsg = {
                 isPinned: this.isChatPinned,
                 msg: {
                     textContent: this.typedMessage,
@@ -531,11 +540,13 @@ export default {
                 },
                 id: this.activeChatUser,
                 group_chat_id: this.activeChatGroup,
-            });
+            }
+            const payload = JSON.stringify(chatMsg);
 
             const formData = new FormData();
 
             formData.append("payload", payload);
+
             if (this.attachment) formData.append("attachment", attachment);
 
             // Clean inputs
@@ -576,15 +587,15 @@ export default {
 
             // Track new chat if started
 
-            if (
-                !this.$store.getters["chat/chatDataOfUser"](this.activeChatUser)
-            ) {
-                await this.$store.dispatch("chat/fetchChatContacts");
-                await this.$store.dispatch("chat/fetchChats");
+            // if (
+            //     !this.$store.getters["chat/chatDataOfUser"](this.activeChatUser)
+            // ) {
+            //     await this.$store.dispatch("chat/fetchChatContacts");
+            //     await this.$store.dispatch("chat/fetchChats");
 
-                // this.trackNewChatMessages();
-                // this.trackNewChats();
-            }
+            //     // this.trackNewChatMessages();
+            //     // this.trackNewChats();
+            // }
 
             this.$store.commit("SET_IS_LOADING", false);
 
@@ -635,7 +646,8 @@ export default {
                     "NewChatMessage",
                     (e) => {
                         console.log('new message sent:', e);
-                        this.$store.dispatch("chat/fetchChats");
+                        // this.$store.dispatch("chat/fetchChats");
+                        this.$store.dispatch('chat/addNewChatMessage', e.chatMessage)
                     }
                 );
             }
@@ -648,8 +660,8 @@ export default {
                         console.log('new group chat messages:', e)
                         // console.log(e.groupChatMessage.group_chat_id)
                         this.$store.dispatch(
-                            "chat/fetchGroupMessages",
-                            e.groupChatMessage.group_chat_id
+                            "chat/addNewGroupChatMessage",
+                            e.groupChatMessage
                         );
                     }
                 );
