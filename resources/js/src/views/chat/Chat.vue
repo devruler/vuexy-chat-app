@@ -621,7 +621,7 @@ export default {
                 console.log('new chat started', e)
                 await this.$store.dispatch("chat/fetchChatContacts");
                 await this.$store.dispatch("chat/fetchChats");
-                this.trackNewChatMessages();
+                this.trackNewChatMessages(e.chat);
             });
         },
         trackNewGroupChats() {
@@ -630,7 +630,7 @@ export default {
                 async (e) => {
                     console.log('new group chat started:', e)
                     await this.$store.dispatch("chat/fetchGroups");
-                    this.trackNewGroupChatMessages();
+                    this.trackNewGroupChatMessages(e.groupChat);
                 }
             );
         },
@@ -638,8 +638,20 @@ export default {
         //     window.Echo.leave("chats");
         // },
 
-        trackNewChatMessages() {
+        trackNewChatMessages(chat = null) {
             //   console.log(JSON.parse(JSON.stringify(this.chats)));
+
+            if(chat){
+                window.Echo.private("chat." + chat.id).listen(
+                    "NewChatMessage",
+                    (e) => {
+                        console.log('new message sent:', e);
+                        // this.$store.dispatch("chat/fetchChats");
+                        this.$store.dispatch('chat/addNewChatMessage', e.chatMessage)
+                    }
+                );
+                return;
+            }
             for (const prop in this.chats) {
                 // console.log(this.chats[prop].chat_id);
                 window.Echo.private("chat." + this.chats[prop].chat_id).listen(
@@ -652,7 +664,21 @@ export default {
                 );
             }
         },
-        trackNewGroupChatMessages() {
+        trackNewGroupChatMessages(group = null) {
+            if(group){
+                window.Echo.private("group-chat." + group.id).listen(
+                    "NewGroupChatMessage",
+                    (e) => {
+                        console.log('new group chat messages:', e)
+                        // console.log(e.groupChatMessage.group_chat_id)
+                        this.$store.dispatch(
+                            "chat/addNewGroupChatMessage",
+                            e.groupChatMessage
+                        );
+                    }
+                );
+                return;
+            }
             for (const group of this.groups) {
                 window.Echo.private("group-chat." + group.id).listen(
                     "NewGroupChatMessage",
