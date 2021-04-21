@@ -23,7 +23,8 @@ import axios from 'axios'
 export default {
   data () {
     return {
-      vueAppClasses: []
+      vueAppClasses: [],
+      presentMembers: null,
     }
   },
   watch: {
@@ -67,10 +68,15 @@ export default {
         })
         .catch(err => console.log(err))
     },
-    listenOnlineOffline() {
-        Echo.join('user-status')
+     listenOnlineOffline() {
+        this.presentMembers = Echo.join('user-status')
+            .here((users) => {
+                // console.log('hi from here', users)
+                axios.put('/api/users/status', { users })
+            })
             .joining((user) => {
                 axios.put('/api/users/online/'+ user.id, {})
+                console.log('hi from joining')
             })
             .leaving((user) => {
                 axios.put('/api/users/offline/'+ user.id, {})
@@ -86,9 +92,12 @@ export default {
                 if(this.$store.state.AppActiveUser.id === e.user.id) this.$store.commit('UPDATE_USER_INFO', e.user)
                 else this.$store.commit('chat/UPDATE_CONTACT_STATUS', e.user)
             });
+        // if(this.presentMembers.members.members.length !== (this.$store.getters['chat/contacts'].length + 1)){
+        //     console.log('update present users', this.presentMembers.members.members.length)
+        // }
     },
   },
-  mounted () {
+  async mounted () {
     //   this.$store.registerModule("chat", moduleChat);
     this.toggleClassInBody(themeConfig.theme)
     this.$store.commit('UPDATE_WINDOW_WIDTH', window.innerWidth)
@@ -98,9 +107,10 @@ export default {
     document.documentElement.style.setProperty('--vh', `${vh}px`)
 
     // get user info
-    this.getUserInfo()
+    await this.getUserInfo()
 
     // Listen and update online and offline status
+    // axios.put('/api/users/online/'+ this.$store.state.AppActiveUser.id, {})
     this.listenOnlineOffline()
   },
   async created () {

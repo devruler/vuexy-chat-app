@@ -754,10 +754,7 @@ export default {
     mounted() {
         this.$store.dispatch("chat/setChatSearchQuery", "");
     },
-    // destroyed() {
-    //     this.untrackNewChats();
-    //     this.untrackNewChatMessages();
-    // },
+
 };
 </script>
 
@@ -765,8 +762,4 @@ export default {
 <style lang="scss">
 @import "@sass/vuexy/apps/chat.scss";
 
-// #file-upload {
-//     opacity: 0;
-//     position: absolute;
-// }
 </style>

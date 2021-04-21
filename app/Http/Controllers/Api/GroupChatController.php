@@ -6,6 +6,7 @@ use App\Events\NewGroupChatCreated;
 use App\Events\NewGroupChatMessage;
 use App\GroupChat;
 use App\Http\Controllers\Controller;
+use App\Services\UploadService;
 use Illuminate\Http\Request;
 
 class GroupChatController extends Controller
@@ -66,17 +67,8 @@ class GroupChatController extends Controller
 
         // upload  and attach file to message if exists
         if($request->hasFile('attachment')){
-            $file = $request->file('attachment');
-            $ext = $file->extension();
-            $name = uniqid() . '.' . $ext;
-            $path = '/storage/attachments/' .  $name;
-            $file->storePubliclyAs('public', '/attachments/' . $name);
-            $message->attachment()->create([
-                'name' => $name,
-                'path' => $path,
-                'extension' => $ext,
-                // 'message_id' => $message->id
-            ]);
+            UploadService::upload($request->file('attachment'), $message);
+
         }
 
         // lazy load attachment relationship

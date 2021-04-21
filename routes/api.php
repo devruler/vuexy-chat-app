@@ -21,6 +21,7 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 Route::prefix('users')->middleware('auth:api')->group(function () {
     Route::put('online/{user}', 'Api\UserController@updateUserOnline');
     Route::put('offline/{user}', 'Api\UserController@updateUserOffline');
+    Route::put('status', 'Api\UserController@updateUsersStatus');
 });
 
 Route::prefix('/apps/chat')->middleware('auth:api')->group(function () {

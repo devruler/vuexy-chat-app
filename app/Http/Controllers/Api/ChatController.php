@@ -6,6 +6,7 @@ use App\Chat;
 use App\Events\NewChatMessage;
 use App\Events\NewChatStarted;
 use App\Http\Controllers\Controller;
+use App\Services\UploadService;
 use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -25,7 +26,6 @@ class ChatController extends Controller
         $recipient = User::find($payload->id);
 
         // Get chat if exists
-        // $chatId = ($request->payload['id'] + auth()->id());
         $chat = Chat::whereIn('recipient_id', [auth()->id(), $payload->id])
         ->whereIn('sender_id', [auth()->id(), $payload->id])
         ->first();
@@ -64,17 +64,7 @@ class ChatController extends Controller
         ]);
 
         if($request->hasFile('attachment')){
-            $file = $request->file('attachment');
-            $ext = $file->extension();
-            $name = uniqid() . '.' . $ext;
-            $path = '/storage/attachments/' .  $name;
-            $file->storePubliclyAs('public', '/attachments/' . $name);
-
-            $message->attachment()->create([
-                'name' => $name,
-                'path' => $path,
-                'extension' => $ext,
-            ]);
+            UploadService::upload($request->file('attachment'), $message);
         }
 
         // Broadcast the new message to other users

@@ -33,4 +33,19 @@ class UserController extends Controller
         return $user;
     }
 
+    public function updateUsersStatus(Request $request){
+        $ids = collect($request->users)->pluck('id');
+        $onlineUsers = User::whereIn('id', $ids)
+        ->get()
+        ->each
+        ->update(['status' => 'online']);
+
+        $offlineUsers = User::whereNotIn('id', $ids)
+        ->get()
+        ->each
+        ->update(['status' => 'offline']);
+
+        return response(['message' => 'users status has been succesfully updated!']);
+    }
+
 }
