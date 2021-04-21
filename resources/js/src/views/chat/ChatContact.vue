@@ -15,15 +15,7 @@
         }"
     >
         <div class="contact__avatar mr-1">
-            <!-- <vs-avatar
-                class="border-2 border-solid border-white"
-                :src="contact.photo || avatarFromName"
-                size="42px"
-            />
-            <div
-                class="h-3 w-3 border-white border border-solid rounded-full absolute right-0 bottom-0"
-                :class="'bg-' + getStatusColor(true)"
-            ></div> -->
+
             <div class="relative inline-flex">
                     <vs-avatar
                         class="m-0 border-2 border-solid border-white"
@@ -100,13 +92,6 @@ export default {
                 }
             };
         },
-    },
-    methods: {
-        // getUserStatus(isActiveUser) {
-        //     return isActiveUser
-        //         ? this.$store.state.AppActiveUser.status
-        //         : this.contact.status;
-        // },
     },
 };
 </script>

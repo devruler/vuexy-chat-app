@@ -237,21 +237,6 @@
                         @keyup.enter="sendMsg"
                     />
 
-                    <!-- File Attachment -->
-                    <!-- <label for="file-upload" class="flex px-2 cursor-pointer">
-                        <feather-icon
-                            icon="PaperclipIcon"
-                            class="cursor-pointer"
-                            :title="attachmentName ? attachmentName : ''"
-                            :svgClasses="['w-6', 'h-6']"
-                        ></feather-icon>
-                        <input
-                            type="file"
-                            id="file-upload"
-                            @change="handleFile"
-                        />
-                    </label> -->
-
                     <feather-icon
                         icon="PaperclipIcon"
                         class="cursor-pointer mx-2"
@@ -371,10 +356,6 @@ export default {
         windowWidth() {
             this.setSidebarWidth();
         },
-        // isLoading(){
-        //     if(this.isLoading) this.$vs.loading()
-        //     else this.$vs.loading.close()
-        // }
         popupUpload() {
             if (this.attachment) {
                 if (this.attachment.size > 5000000) {
@@ -513,7 +494,7 @@ export default {
 
             this.attachment = e.target.files[0];
 
-            const allowedExtensions = ['txt','pdf','doc','ppt','xls','docx','pptx','xlsx','rar','zip','jpg','jpeg','png']
+            const allowedExtensions = ['txt','pdf','doc','ppt','xls','docx','pptx','xlsx','rar','zip','jpg','jpeg','png', 'gif']
 
             if(!allowedExtensions.includes(this.attachment.name.split('.').pop())){
                 this.errors.attachment = 'File type is not allowed.'
@@ -585,18 +566,6 @@ export default {
                 }
             }
 
-            // Track new chat if started
-
-            // if (
-            //     !this.$store.getters["chat/chatDataOfUser"](this.activeChatUser)
-            // ) {
-            //     await this.$store.dispatch("chat/fetchChatContacts");
-            //     await this.$store.dispatch("chat/fetchChats");
-
-            //     // this.trackNewChatMessages();
-            //     // this.trackNewChats();
-            // }
-
             this.$store.commit("SET_IS_LOADING", false);
 
             const scroll_el = this.$refs.chatLogPS.$el || this.$refs.chatLogPS;
@@ -634,12 +603,8 @@ export default {
                 }
             );
         },
-        // untrackNewChats() {
-        //     window.Echo.leave("chats");
-        // },
 
         trackNewChatMessages(chat = null) {
-            //   console.log(JSON.parse(JSON.stringify(this.chats)));
 
             if(chat){
                 window.Echo.private("chat." + chat.id).listen(
@@ -693,13 +658,6 @@ export default {
                 );
             }
         },
-        // untrackNewChatMessages() {
-        //     //   console.log(JSON.parse(JSON.stringify(this.chats)));
-        //     for (const prop in this.chats) {
-        //         console.log(prop);
-        //         window.Echo.leave("chat." + this.chats[prop].chat_id);
-        //     }
-        // },
         async createGroup() {
             // this.$store.commit('SET_IS_LOADING', true)
             this.$vs.loading();

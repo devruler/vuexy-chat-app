@@ -24,7 +24,6 @@ export default {
   data () {
     return {
       vueAppClasses: [],
-      presentMembers: null,
     }
   },
   watch: {
@@ -69,10 +68,15 @@ export default {
         .catch(err => console.log(err))
     },
      listenOnlineOffline() {
-        this.presentMembers = Echo.join('user-status')
+        Echo.join('user-status')
             .here((users) => {
-                // console.log('hi from here', users)
+                console.log('here event', users)
                 axios.put('/api/users/status', { users })
+                let updatedUsers = users.map(user => ({...user, status: 'online'}))
+                updatedUsers.forEach(user => {
+                    if(this.$store.state.AppActiveUser.id === user.id) this.$store.commit('UPDATE_USER_INFO', user)
+                    else this.$store.commit('chat/UPDATE_CONTACT_STATUS', user)
+                });
             })
             .joining((user) => {
                 axios.put('/api/users/online/'+ user.id, {})
@@ -92,9 +96,6 @@ export default {
                 if(this.$store.state.AppActiveUser.id === e.user.id) this.$store.commit('UPDATE_USER_INFO', e.user)
                 else this.$store.commit('chat/UPDATE_CONTACT_STATUS', e.user)
             });
-        // if(this.presentMembers.members.members.length !== (this.$store.getters['chat/contacts'].length + 1)){
-        //     console.log('update present users', this.presentMembers.members.members.length)
-        // }
     },
   },
   async mounted () {

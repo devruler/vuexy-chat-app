@@ -17,7 +17,7 @@ class ChatController extends Controller
     {
         // validate file
         $request->validate([
-            'attachment' => 'sometimes|file|mimes:txt,pdf,doc,ppt,xls,docx,pptx,xlsx,rar,zip,jpg,jpeg,png|max:5000'
+            'attachment' => 'sometimes|file|mimes:txt,pdf,doc,ppt,xls,docx,pptx,xlsx,rar,zip,jpg,jpeg,png,gif|max:5000'
         ]);
 
         $payload = json_decode($request->payload);
