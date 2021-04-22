@@ -17,7 +17,7 @@ class UserController extends Controller
             'status' => 'online'
         ]);
 
-        broadcast(new UserOnline($user))->toOthers();
+        // broadcast(new UserOnline($user))->toOthers();
 
         return $user;
     }
@@ -28,7 +28,7 @@ class UserController extends Controller
             'status' => 'offline'
         ]);
 
-        broadcast(new UserOffline($user))->toOthers();
+        // broadcast(new UserOffline($user))->toOthers();
 
         return $user;
     }

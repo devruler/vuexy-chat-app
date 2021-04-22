@@ -26,4 +26,6 @@ class UserOnline implements ShouldBroadcast
     {
         return new PresenceChannel('user-status');
     }
+
+
 }

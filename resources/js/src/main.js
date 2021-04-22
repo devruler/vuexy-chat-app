@@ -60,15 +60,21 @@ import 'prismjs/themes/prism-tomorrow.css'
 // Broadcasting configurations
 import Echo from 'laravel-echo';
 
-window.Pusher = require('pusher-js');
+// window.Pusher = require('pusher-js');
+window.io = require('socket.io-client');
+if(typeof io !== 'undefined'){
+    console.log('echo init')
+    window.Echo = new Echo({
+        broadcaster: 'socket.io',
+        host: window.location.hostname + ":6001",
+        transports: ['websocket'],
+        // key: process.env.MIX_PUSHER_APP_KEY,
+        // cluster: process.env.MIX_PUSHER_APP_CLUSTER,
+        // forceTLS: false,
+        // authEndpoint: 'http://starter-kit.test/api/broadcasting/auth',
+    });
 
-window.Echo = new Echo({
-    broadcaster: 'pusher',
-    key: process.env.MIX_PUSHER_APP_KEY,
-    cluster: process.env.MIX_PUSHER_APP_CLUSTER,
-    forceTLS: false,
-    authEndpoint: 'http://starter-kit.test/api/broadcasting/auth',
-});
+}
 
 
 Vue.config.productionTip = false

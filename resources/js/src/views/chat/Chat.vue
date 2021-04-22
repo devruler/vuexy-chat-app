@@ -605,7 +605,6 @@ export default {
         },
 
         trackNewChatMessages(chat = null) {
-
             if(chat){
                 window.Echo.private("chat." + chat.id).listen(
                     "NewChatMessage",
@@ -705,6 +704,7 @@ export default {
 
         this.trackNewGroupChats();
         this.trackNewGroupChatMessages();
+
     },
     beforeDestroy() {
         this.$store.unregisterModule("chat");

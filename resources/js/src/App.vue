@@ -24,6 +24,7 @@ export default {
   data () {
     return {
       vueAppClasses: [],
+      presentUsers: null
     }
   },
   watch: {
@@ -70,32 +71,42 @@ export default {
      listenOnlineOffline() {
         Echo.join('user-status')
             .here((users) => {
-                console.log('here event', users)
                 axios.put('/api/users/status', { users })
-                let updatedUsers = users.map(user => ({...user, status: 'online'}))
+                const updatedUsers = users.map(user => ({...user, status: 'online'}))
+                console.log('here event', users)
                 updatedUsers.forEach(user => {
-                    if(this.$store.state.AppActiveUser.id === user.id) this.$store.commit('UPDATE_USER_INFO', user)
-                    else this.$store.commit('chat/UPDATE_CONTACT_STATUS', user)
+                    if(this.$store.state.AppActiveUser.id === user.id){
+                      this.$store.commit('UPDATE_USER_INFO', user)
+                    } else {
+                      this.$store.commit('chat/UPDATE_CONTACT_STATUS', user)
+                    }
                 });
             })
             .joining((user) => {
                 axios.put('/api/users/online/'+ user.id, {})
-                console.log('hi from joining')
+                console.log('hi from joining', user)
+                user.status = 'online'
+                if(this.$store.state.AppActiveUser.id === user.id) this.$store.commit('UPDATE_USER_INFO', user)
+                else this.$store.commit('chat/UPDATE_CONTACT_STATUS', user)
             })
             .leaving((user) => {
                 axios.put('/api/users/offline/'+ user.id, {})
+                console.log('hi from leaving', user)
+                user.status = 'offline'
+                if(this.$store.state.AppActiveUser.id === user.id) this.$store.commit('UPDATE_USER_INFO', user)
+                else this.$store.commit('chat/UPDATE_CONTACT_STATUS', user)
             })
-            .listen('UserOnline', (e) => {
-                // this.friend = e.user;
-                console.log('new user online', e)
-                if(this.$store.state.AppActiveUser.id === e.user.id) this.$store.commit('UPDATE_USER_INFO', e.user)
-                else this.$store.commit('chat/UPDATE_CONTACT_STATUS', e.user)
-            })
-            .listen('UserOffline', (e) => {
-                console.log('new user offline', e)
-                if(this.$store.state.AppActiveUser.id === e.user.id) this.$store.commit('UPDATE_USER_INFO', e.user)
-                else this.$store.commit('chat/UPDATE_CONTACT_STATUS', e.user)
-            });
+            // .listen('UserOnline', (e) => {
+            //     // this.friend = e.user;
+            //     console.log('new user online', e)
+            //     if(this.$store.state.AppActiveUser.id === e.user.id) this.$store.commit('UPDATE_USER_INFO', e.user)
+            //     else this.$store.commit('chat/UPDATE_CONTACT_STATUS', e.user)
+            // })
+            // .listen('UserOffline', (e) => {
+            //     console.log('new user offline', e)
+            //     if(this.$store.state.AppActiveUser.id === e.user.id) this.$store.commit('UPDATE_USER_INFO', e.user)
+            //     else this.$store.commit('chat/UPDATE_CONTACT_STATUS', e.user)
+            // });
     },
   },
   async mounted () {

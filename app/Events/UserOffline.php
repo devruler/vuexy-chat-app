@@ -26,4 +26,6 @@ class UserOffline implements ShouldBroadcast
     {
         return new PresenceChannel('user-status');
     }
+
+
 }
