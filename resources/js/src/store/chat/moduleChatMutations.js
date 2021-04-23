@@ -11,76 +11,83 @@
 import Vue from 'vue'
 
 export default {
-  UPDATE_ABOUT_CHAT (state, obj) {
-    obj.rootState.AppActiveUser.about = obj.value
-  },
-  UPDATE_STATUS_CHAT (state, obj) {
-    obj.rootState.AppActiveUser.status = obj.value
-  },
 
-  // API AFTER
-  SEND_CHAT_MESSAGE (state, payload) {
-      console.log(payload)
-    if (payload.chatData) {
-      // If there's already chat. Push msg to existing chat
+    UPDATE_ABOUT_CHAT(state, obj) {
+        obj.rootState.AppActiveUser.about = obj.value
+    },
 
-      console.log('chat already exits and push msg')
-      state.chats[Object.keys(state.chats).find(key => Number(key) === payload.id)].msg.push(payload.msg)
-    } else {
-      // Create New chat and add msg
-      console.log('create new chat and ad msg')
-      const chatId = payload.id
-      Vue.set(state.chats, [chatId], { isPinned: payload.isPinned,
-        msg: [payload.msg] })
-    }
-  },
+    UPDATE_STATUS_CHAT(state, obj) {
+        obj.rootState.AppActiveUser.status = obj.value
+    },
 
-  ADD_NEW_GROUP_CHAT_MESSAGE (state, payload) {
-      // Push msg to existing group chat
-      state.groups.find(group => group.id === payload.group_chat_id).messages.push(payload)
-  },
+    // API AFTER
+    SEND_CHAT_MESSAGE(state, payload) {
+        console.log(payload)
+        if (payload.chatData) {
+            // If there's already chat. Push msg to existing chat
 
-  UPDATE_CONTACTS (state, contacts) {
-    state.contacts = contacts
-  },
+            console.log('chat already exits and push msg')
+            state.chats[Object.keys(state.chats).find(key => Number(key) === payload.id)].msg.push(payload.msg)
+        } else {
+            // Create New chat and add msg
+            console.log('create new chat and ad msg')
+            const chatId = payload.id
+            Vue.set(state.chats, [chatId], {
+                isPinned: payload.isPinned,
+                msg: [payload.msg]
+            })
+        }
+    },
 
-  UPDATE_CONTACT_STATUS (state, contact) {
-    state.contacts = state.contacts.map((item) => item.id === contact.id ? contact : item)
-    state.chatContacts = state.chatContacts.map((item) => item.id === contact.id ? contact : item)
-  },
+    UPDATE_CONTACTS(state, contacts) {
+        state.contacts = contacts
+    },
 
-  UPDATE_CHAT_CONTACTS (state, chatContacts) {
-    state.chatContacts = chatContacts
-  },
-  UPDATE_CHATS (state, chats) {
-    state.chats = chats
-  },
-  UPDATE_GROUPS (state, groups) {
-    state.groups = groups
-  },
+    UPDATE_CONTACT_STATUS(state, contact) {
+        state.contacts = state.contacts.map((item) => item.id === contact.id ? contact : item)
+        state.chatContacts = state.chatContacts.map((item) => item.id === contact.id ? contact : item)
+    },
 
-  ADD_NEW_CHAT_MESSAGE (state, payload){
-    state.chats[payload.chatUser]['msg'].push(payload.msg)
-  },
+    UPDATE_CHAT_CONTACTS(state, chatContacts) {
+        state.chatContacts = chatContacts
+    },
 
-//   ADD_NEW_GROUP_CHAT_MESSAGE (state, payload){
-//     state.groups = state.groups.map(group => group.id === payload.group_chat_id ? group.messages.push(payload) : group)
-//   },
+    UPDATE_CHATS(state, chats) {
+        state.chats = chats
+    },
 
-  UPDATE_GROUP_MESSAGES (state, updatedGroup) {
-    state.groups = state.groups.map((group) => group.id === updatedGroup.id ? updatedGroup : group)
-  },
+    ADD_NEW_CHAT_MESSAGE(state, payload) {
+        state.chats[payload.chatUser]['msg'].push(payload.msg)
+    },
 
-  SET_CHAT_SEARCH_QUERY (state, query) {
-    state.chatSearchQuery = query
-  },
-  MARK_SEEN_ALL_MESSAGES (state, payload) {
-    payload.chatData.msg.forEach((msg) => {
-      msg.isSeen = true
-    })
-  },
-  TOGGLE_IS_PINNED (state, payload) {
-    state.chats[Object.keys(state.chats).find(key => Number(key) === payload.id)].isPinned = payload.value
-  }
+    SET_CHAT_SEARCH_QUERY(state, query) {
+        state.chatSearchQuery = query
+    },
+
+    MARK_SEEN_ALL_MESSAGES(state, payload) {
+        payload.chatData.msg.forEach((msg) => {
+            msg.isSeen = true
+        })
+    },
+
+    TOGGLE_IS_PINNED(state, payload) {
+        state.chats[Object.keys(state.chats).find(key => Number(key) === payload.id)].isPinned = payload.value
+    },
+
+
+    /* --- Group Chat --- */
+
+    ADD_NEW_GROUP_CHAT_MESSAGE(state, payload) {
+        // Push msg to existing group chat
+        state.groups.find(group => group.id === payload.group_chat_id).messages.push(payload)
+    },
+
+    UPDATE_GROUPS(state, groups) {
+        state.groups = groups
+    },
+
+    UPDATE_GROUP_MESSAGES(state, updatedGroup) {
+        state.groups = state.groups.map((group) => group.id === updatedGroup.id ? updatedGroup : group)
+    },
+
 }
-

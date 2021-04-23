@@ -83,10 +83,8 @@ export default {
 
                 if (userStatus === "online") {
                     return "success";
-                } else if (userStatus === "do not disturb") {
+                } else if (userStatus === "offline") {
                     return "danger";
-                } else if (userStatus === "away") {
-                    return "warning";
                 } else {
                     return "grey";
                 }

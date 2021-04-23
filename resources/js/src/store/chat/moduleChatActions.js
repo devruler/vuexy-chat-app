@@ -10,29 +10,13 @@
 import axios from '@/axios.js'
 
 export default {
+
     setChatSearchQuery({
         commit
     }, query) {
         commit('SET_CHAT_SEARCH_QUERY', query)
     },
-    // updateAboutChat({
-    //     commit,
-    //     rootState
-    // }, value) {
-    //     commit('UPDATE_ABOUT_CHAT', {
-    //         rootState,
-    //         value
-    //     })
-    // },
-    // updateStatusChat({
-    //     commit,
-    //     rootState
-    // }, value) {
-    //     commit('UPDATE_STATUS_CHAT', {
-    //         rootState,
-    //         value
-    //     })
-    // },
+
 
     // API CALLS
     sendChatMessage({
@@ -44,23 +28,6 @@ export default {
             axios.post('/api/apps/chat/msg', payload)
                 .then((response) => {
 
-                    resolve(response)
-                })
-                .catch((error) => {
-                    reject(error)
-                })
-        })
-    },
-
-    sendGroupChatMessage({
-        getters,
-        commit,
-        dispatch
-    }, payload) {
-        return new Promise((resolve, reject) => {
-            axios.post('/api/apps/chat/groups/msg', payload)
-                .then((response) => {
-                    console.log(response)
                     resolve(response)
                 })
                 .catch((error) => {
@@ -117,55 +84,6 @@ export default {
             axios.get('/api/apps/chat/chats')
                 .then((response) => {
                     commit('UPDATE_CHATS', response.data)
-                    resolve(response)
-                })
-                .catch((error) => {
-                    reject(error)
-                })
-        })
-    },
-
-    // Get group chats from server. Also change in store
-    fetchGroups({
-        commit
-    }) {
-        return new Promise((resolve, reject) => {
-            axios.get('/api/apps/chat/groups')
-                .then((response) => {
-                    commit('UPDATE_GROUPS', response.data)
-                    resolve(response)
-                })
-                .catch((error) => {
-                    reject(error)
-                })
-        })
-    },
-
-    // Get group chat messages from server. Also change in store
-    fetchGroupMessages({
-        commit
-    }, payload) {
-        return new Promise((resolve, reject) => {
-            axios.get('/api/apps/chat/groups/' + payload)
-                .then((response) => {
-                    commit('UPDATE_GROUP_MESSAGES', response.data)
-                    resolve(response)
-                })
-                .catch((error) => {
-                    reject(error)
-                })
-        })
-    },
-
-    // Get chats from server. Also change in store
-    storeGroup({
-        commit
-    }, payload) {
-
-        return new Promise((resolve, reject) => {
-            axios.post('/api/apps/chat/groups', payload)
-                .then((response) => {
-                    commit('UPDATE_GROUPS', response.data)
                     resolve(response)
                 })
                 .catch((error) => {
@@ -242,7 +160,77 @@ export default {
         commit('ADD_NEW_CHAT_MESSAGE', {msg, chatUser})
     },
 
+    /* --- GROUP CHAT --- */
+
+    // store group msg in database
+    sendGroupChatMessage({
+        getters,
+        commit,
+        dispatch
+    }, payload) {
+        return new Promise((resolve, reject) => {
+            axios.post('/api/apps/chat/groups/msg', payload)
+                .then((response) => {
+                    console.log(response)
+                    resolve(response)
+                })
+                .catch((error) => {
+                    reject(error)
+                })
+        })
+    },
+
+    // push new group message to the group messages list
     addNewGroupChatMessage({state, commit, rootState}, payload){
         commit('ADD_NEW_GROUP_CHAT_MESSAGE', payload)
-    }
+    },
+
+    // Get group chats from server. Also change in store
+    fetchGroups({
+        commit
+    }) {
+        return new Promise((resolve, reject) => {
+            axios.get('/api/apps/chat/groups')
+                .then((response) => {
+                    commit('UPDATE_GROUPS', response.data)
+                    resolve(response)
+                })
+                .catch((error) => {
+                    reject(error)
+                })
+        })
+    },
+
+    // Get group chat messages from server. Also change in store
+    fetchGroupMessages({
+        commit
+    }, payload) {
+        return new Promise((resolve, reject) => {
+            axios.get('/api/apps/chat/groups/' + payload)
+                .then((response) => {
+                    commit('UPDATE_GROUP_MESSAGES', response.data)
+                    resolve(response)
+                })
+                .catch((error) => {
+                    reject(error)
+                })
+        })
+    },
+
+    // Store a group chat in database
+    storeGroup({
+        commit
+    }, payload) {
+
+        return new Promise((resolve, reject) => {
+            axios.post('/api/apps/chat/groups', payload)
+                .then((response) => {
+                    commit('UPDATE_GROUPS', response.data)
+                    resolve(response)
+                })
+                .catch((error) => {
+                    reject(error)
+                })
+        })
+    },
 }

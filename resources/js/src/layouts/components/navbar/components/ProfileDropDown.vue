@@ -104,10 +104,8 @@ export default {
 
                 if (userStatus === "online") {
                     return "success";
-                } else if (userStatus === "do not disturb") {
+                } else if (userStatus === "offline") {
                     return "danger";
-                } else if (userStatus === "away") {
-                    return "warning";
                 } else {
                     return "grey";
                 }
@@ -118,17 +116,9 @@ export default {
         logout() {
             localStorage.removeItem("userInfo");
 
-            // If user clicks on logout -> set offline -> redirect
-            // axios.put("/api/users/offline" + this.activeUserInfo).then(() => {
-            //     axios.post("/logout")
-            //         .then(() => (window.location.href = "/pages/login"))
-            //         .catch((err) => console.log(err));
-            // });
             axios.post("/logout")
-                    .then(() => (window.location.href = "/pages/login"))
-                    .catch((err) => console.log(err));
-
-            //   this.$router.push('/pages/login').catch(() => {})
+            .then(() => (window.location.href = "/pages/login"))
+            .catch((err) => console.log(err));
         },
     },
 };

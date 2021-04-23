@@ -42,13 +42,20 @@ class GroupChatController extends Controller
     }
 
     public function storeGroupChatMsg(Request $request){
-        // validate file
+        // validation
+        $request->payload = json_decode($request->payload);
+
         $request->validate([
-            'attachment' => 'sometimes|file|mimes:txt,pdf,doc,ppt,xls,docx,pptx,xlsx,rar,zip,jpg,jpeg,png,gif|max:5000'
+            'payload.id' => ['nullable', 'int'],
+            'payload.group_chat_id' => ['nullable', 'int'],
+            'payload.isPinned' => ['boolean'],
+            'payload.msg.textContent' => ['nullable', 'string',],
+            'payload.msg.isSeen' => ['boolean',],
+            'payload.msg.isSent' => ['boolean',],
+            'attachment' => ['sometimes','file','mimes:txt,pdf,doc,ppt,xls,docx,pptx,xlsx,rar,zip,jpg,jpeg,png,gif','max:5000'],
         ]);
 
-        // decode json 'payload' formdata object
-        $payload = json_decode($request->payload);
+        $payload = $request->payload;
 
         // Get group chat
         $groupChat = GroupChat::where('id', $payload->group_chat_id)->first();

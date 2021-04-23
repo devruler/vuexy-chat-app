@@ -101,9 +101,6 @@ const mutations = {
     let userInfo = JSON.parse(localStorage.getItem("userInfo")) || state.AppActiveUser
 
     for (const property of Object.keys(payload)) {
-        // if(property === 'photo' && !payload[property]){
-        //     state.AppActiveUser[property] = 'https://ui-avatars.com/api/?name=' + payload['name']
-        // }
 
       if (payload[property] != null) {
         // If some of user property is null - user default property defined in state.AppActiveUser
@@ -112,13 +109,6 @@ const mutations = {
         // Update key in localStorage
         userInfo[property] = payload[property]
       }
-
-    // // If some of user property is null - user default property defined in state.AppActiveUser
-    //     state.AppActiveUser[property] = payload[property]
-
-    //     // Update key in localStorage
-    //     userInfo[property] = payload[property]
-
 
     }
     // Store data in localStorage

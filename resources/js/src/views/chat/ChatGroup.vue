@@ -20,7 +20,6 @@
 
             <div class="chat__contact__meta flex self-start flex-col items-end w-1/6">
                 <span class="whitespace-no-wrap">{{ lastMessaged | date }}</span>
-                <!-- <vs-chip class="number" color="primary" v-if="unseenMsg">{{ unseenMsg }}</vs-chip> -->
             </div>
         </div>
     </div>
@@ -32,31 +31,15 @@ export default {
     group          : { type: Object,  required: true },
     isActiveChatGroup : { type: Boolean },
     lastMessaged     : { type: String,  default : '' },
-    // lastMessage : { type: String, default: ''},
     showLastMsg      : { type: Boolean, default: false },
     unseenMsg        : { type: Number,  default : 0 }
   },
-//   data(){
-//       return {
-//           lastMessage: ""
-//       }
-//   },
   computed: {
-    //   avatarFromName(){
-    //       return 'https://ui-avatars.com/api/?name=' + this.group.name.split(' ').join('+') + '&background=random'
-    //   },
     lastMessage(){
         return this.$store.getters['chat/groupChatLastMessaged'](this.group.id) ? this.$store.getters['chat/groupChatLastMessaged'](this.group.id).content : ''
     }
 
   },
-  mounted(){
-    //   setInterval(() => {
-    //       console.log(this.lastMessage)
-    //   }, 500)
-    // console.log(this.$store.getters['chat/groupChatLastMessaged'](this.group.id).content)
-    // this.lastMessage = this.$store.getters['chat/groupChatLastMessaged'](this.group.id).content
-}
 }
 </script>
 

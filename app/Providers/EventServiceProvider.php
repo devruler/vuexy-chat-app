@@ -36,25 +36,13 @@ class EventServiceProvider extends ServiceProvider
         ],
         Logout::class => [
             SetUserOffline::class
+        ],
+        UserOnline::class => [
+            SetUserOnline::class
+        ],
+        UserOffline::class => [
+            SetUserOffline::class
         ]
-        // "App\Events\NewChatMessage" => [
-        //     SendChatMessageNotification::class,
-        // ],
-        // NewChatStarted::class => [
-        //     SendNewChatStartedNotification::class,
-        // ],
-        // NewGroupChatCreated::class => [
-        //     SendNewGroupChatCreatedNotification::class,
-        // ],
-        // NewGroupChatMessage::class => [
-        //     SendGroupChatMessageNotification::class,
-        // ],
-        // UserOnline::class => [
-
-        // ],
-        // UserOffline::class => [
-
-        // ]
     ];
 
     /**

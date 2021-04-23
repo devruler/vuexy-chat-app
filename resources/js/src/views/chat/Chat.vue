@@ -32,12 +32,6 @@
 
             <div class="chat__profile-search flex p-4">
                 <div class="relative inline-flex">
-                    <!-- <vs-avatar
-                        class="m-0 border-2 border-solid border-white"
-                        :src="activeUser.photo || ('https://ui-avatars.com/api/?name=' + activeUser.name)"
-                        size="40px"
-                        @click="showProfileSidebar(Number(activeUser.id), true)"
-                    /> -->
                     <vs-avatar
                         class="m-0 border-2 border-solid border-white"
                         :src="activeUser.photo || ('https://ui-avatars.com/api/?name=' + activeUser.name)"
@@ -378,18 +372,6 @@ export default {
                 if (unseenMsg) return unseenMsg;
             };
         },
-        groupChatLastMessaged() {
-            return (groupId) =>
-                this.$store.getters["chat/groupChatLastMessaged"](groupId);
-        },
-        groupChatUnseenMessages() {
-            return (groupId) => {
-                const unseenMsg = this.$store.getters[
-                    "chat/groupChatUnseenMessages"
-                ](groupId);
-                if (unseenMsg) return unseenMsg;
-            };
-        },
         activeUser() {
             return this.$store.state.AppActiveUser;
         },
@@ -411,9 +393,6 @@ export default {
         chatContacts() {
             return this.$store.getters["chat/chatContacts"];
         },
-        groups() {
-            return this.$store.getters["chat/groups"];
-        },
         contacts() {
             return this.$store.getters["chat/contacts"];
         },
@@ -434,9 +413,7 @@ export default {
         isActiveChatUser() {
             return (userId) => userId === this.activeChatUser;
         },
-        isActiveChatGroup() {
-            return (groupId) => groupId === this.activeChatGroup;
-        },
+
         windowWidth() {
             return this.$store.state.windowWidth;
         },
@@ -446,9 +423,24 @@ export default {
         isLoading() {
             return this.$store.state.isLoading;
         },
-        csrfToken() {
-            return document.head.querySelector("meta[name='csrf-token']")
-                .content;
+        groupChatLastMessaged() {
+            return (groupId) =>
+                this.$store.getters["chat/groupChatLastMessaged"](groupId);
+        },
+        groupChatUnseenMessages() {
+            return (groupId) => {
+                const unseenMsg = this.$store.getters[
+                    "chat/groupChatUnseenMessages"
+                ](groupId);
+                if (unseenMsg) return unseenMsg;
+            };
+        },
+        isActiveChatGroup() {
+            return (groupId) => groupId === this.activeChatGroup;
+        },
+
+        groups() {
+            return this.$store.getters["chat/groups"];
         },
     },
 
@@ -585,26 +577,26 @@ export default {
             if (!value && this.clickNotClose) return;
             this.isChatSidebarActive = value;
         },
-        trackNewChats() {
+        listenNewChats() {
             window.Echo.private("chats").listen("NewChatStarted", async (e) => {
                 console.log('new chat started', e)
                 await this.$store.dispatch("chat/fetchChatContacts");
                 await this.$store.dispatch("chat/fetchChats");
-                this.trackNewChatMessages(e.chat);
+                this.listenNewChatMessages(e.chat);
             });
         },
-        trackNewGroupChats() {
+        listenNewGroupChats() {
             window.Echo.private("group-chats").listen(
                 "NewGroupChatCreated",
                 async (e) => {
                     console.log('new group chat started:', e)
                     await this.$store.dispatch("chat/fetchGroups");
-                    this.trackNewGroupChatMessages(e.groupChat);
+                    this.listenNewGroupChatMessages(e.groupChat);
                 }
             );
         },
 
-        trackNewChatMessages(chat = null) {
+        listenNewChatMessages(chat = null) {
             if(chat){
                 window.Echo.private("chat." + chat.id).listen(
                     "NewChatMessage",
@@ -628,7 +620,8 @@ export default {
                 );
             }
         },
-        trackNewGroupChatMessages(group = null) {
+        listenNewGroupChatMessages(group = null) {
+            // check if group exists and listen to it.
             if(group){
                 window.Echo.private("group-chat." + group.id).listen(
                     "NewGroupChatMessage",
@@ -643,6 +636,8 @@ export default {
                 );
                 return;
             }
+
+            // Otherwise listen to the available list of groups in store state
             for (const group of this.groups) {
                 window.Echo.private("group-chat." + group.id).listen(
                     "NewGroupChatMessage",
@@ -699,11 +694,11 @@ export default {
         await this.$store.dispatch("chat/fetchChats");
         this.setSidebarWidth();
 
-        this.trackNewChats();
-        this.trackNewChatMessages();
+        this.listenNewChats();
+        this.listenNewChatMessages();
 
-        this.trackNewGroupChats();
-        this.trackNewGroupChatMessages();
+        this.listenNewGroupChats();
+        this.listenNewGroupChatMessages();
 
     },
     beforeDestroy() {

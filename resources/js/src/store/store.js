@@ -16,6 +16,7 @@ import getters from "./getters"
 import mutations from "./mutations"
 import actions from "./actions"
 
+// use & register the moduleChat store globally.
 import moduleChat from './chat/moduleChat.js'
 
 Vue.use(Vuex)
