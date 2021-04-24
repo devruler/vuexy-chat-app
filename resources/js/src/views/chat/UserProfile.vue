@@ -30,7 +30,10 @@
                 <div class="relative inline-flex mx-auto mb-5 mt-6">
                     <vs-avatar
                         class="m-0 border-white border-2 border-solid shadow-md"
-                        :src="chatUser.photo || ('https://ui-avatars.com/api/?name=' + chatUser.name)"
+                        :src="
+                            chatUser.photo ||
+                            'https://ui-avatars.com/api/?name=' + chatUser.name
+                        "
                         size="70px"
                     />
                     <div
@@ -101,7 +104,11 @@
                                 </li>
                             </ul>
                         </div>
-                        <vs-button button="submit" type="filled" color="primary" class="my-3"
+                        <vs-button
+                            button="submit"
+                            type="filled"
+                            color="primary"
+                            class="my-3"
                             >Update</vs-button
                         >
                     </form>
@@ -112,72 +119,86 @@
 </template>
 
 <script>
-import VuePerfectScrollbar from 'vue-perfect-scrollbar'
+import VuePerfectScrollbar from "vue-perfect-scrollbar";
 
 export default {
-  props: {
-    userId: {
-      type: Number,
-      required: true
+    props: {
+        userId: {
+            type: Number,
+            required: true,
+        },
+        active: {
+            type: Boolean,
+            required: true,
+        },
+        isLoggedInUser: {
+            type: Boolean,
+            required: true,
+        },
     },
-    active: {
-      type: Boolean,
-      required: true
+    data() {
+        return {
+            counterDanger: false,
+            settings: {
+                // perfectscrollbar settings
+                maxScrollbarLength: 60,
+                wheelSpeed: 0.6,
+            },
+        };
     },
-    isLoggedInUser: {
-      type: Boolean,
-      required: true
-    }
-  },
-  data () {
-    return {
-      counterDanger: false,
-      settings: { // perfectscrollbar settings
-        maxScrollbarLength: 60,
-        wheelSpeed: .60
-      }
-    }
-  },
-  computed: {
-    chatUser () {
-      return this.$store.getters['chat/chatUser'](this.userId)
-    },
-    activeLocal: {
-      get ()      { return this.active },
-      set (value) { this.$emit('closeProfileSidebar', value) }
-    },
-    about: {
-      get ()      { return this.chatUser.about },
-      set (value) { this.$store.dispatch('updateUserInfo', { about: value }) }
-    },
-    status: {
-      get ()      { return this.chatUser.status },
-      set (value) { this.$store.dispatch('updateUserInfo', { status: value }) }
-    },
+    computed: {
+        chatUser() {
+            return this.$store.getters["chat/chatUser"](this.userId);
+        },
+        activeLocal: {
+            get() {
+                return this.active;
+            },
+            set(value) {
+                this.$emit("closeProfileSidebar", value);
+            },
+        },
+        about: {
+            get() {
+                return this.chatUser.about;
+            },
+            set(value) {
+                this.$store.dispatch("updateUserInfo", { about: value });
+            },
+        },
+        status: {
+            get() {
+                return this.chatUser.status;
+            },
+            set(value) {
+                this.$store.dispatch("updateUserInfo", { status: value });
+            },
+        },
 
-    statusColor () {
-      const userStatus = this.chatUser.status
+        statusColor() {
+            const userStatus = this.chatUser.status;
 
-      if (userStatus === 'online') {
-        return 'success'
-      } else if (userStatus === 'do not disturb') {
-        return 'danger'
-      } else if (userStatus === 'away') {
-        return 'warning'
-      } else {
-        return 'grey'
-      }
+            if (userStatus === "online") {
+                return "success";
+            } else if (userStatus === "offline") {
+                return "danger";
+            } else {
+                return "grey";
+            }
+        },
+        scrollbarTag() {
+            return this.$store.getters.scrollbarTag;
+        },
     },
-    scrollbarTag () {
-      return this.$store.getters.scrollbarTag
-    }
-  },
-  methods: {
-      async updateUserStatus(){
-          this.$vs.loading()
+    methods: {
+        async updateUserStatus() {
+            this.$vs.loading();
 
             try {
-                await this.$store.dispatch('chat/updateUserStatus', this.chatUser)
+                await this.$store.dispatch(
+                    "chat/updateUserStatus",
+                    this.chatUser
+                );
             } catch (err) {
                 if (err.response.status >= 400 && err.response.status < 500) {
                     this.$vs.notify({
@@ -192,13 +213,12 @@ export default {
                     });
                 }
             }
-          this.$vs.loading.close()
-      }
-  },
-  components: {
-    VuePerfectScrollbar
-  }
-}
-
+            this.$vs.loading.close();
+        },
+    },
+    components: {
+        VuePerfectScrollbar,
+    },
+};
 </script>
 

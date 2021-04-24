@@ -381,10 +381,8 @@ export default {
 
                 if (userStatus === "online") {
                     return "success";
-                } else if (userStatus === "do not disturb") {
+                } else if (userStatus === "offline") {
                     return "danger";
-                } else if (userStatus === "away") {
-                    return "warning";
                 } else {
                     return "grey";
                 }
@@ -482,8 +480,6 @@ export default {
             this.activeProfileSidebar = !this.activeProfileSidebar;
         },
         handleFile(e) {
-            // console.log(e);
-
             this.attachment = e.target.files[0];
 
             const allowedExtensions = ['txt','pdf','doc','ppt','xls','docx','pptx','xlsx','rar','zip','jpg','jpeg','png', 'gif']
@@ -579,7 +575,7 @@ export default {
         },
         listenNewChats() {
             window.Echo.private("chats").listen("NewChatStarted", async (e) => {
-                console.log('new chat started', e)
+                // console.log('new chat started', e)
                 await this.$store.dispatch("chat/fetchChatContacts");
                 await this.$store.dispatch("chat/fetchChats");
                 this.listenNewChatMessages(e.chat);
@@ -589,7 +585,7 @@ export default {
             window.Echo.private("group-chats").listen(
                 "NewGroupChatCreated",
                 async (e) => {
-                    console.log('new group chat started:', e)
+                    // console.log('new group chat started:', e)
                     await this.$store.dispatch("chat/fetchGroups");
                     this.listenNewGroupChatMessages(e.groupChat);
                 }
@@ -601,8 +597,7 @@ export default {
                 window.Echo.private("chat." + chat.id).listen(
                     "NewChatMessage",
                     (e) => {
-                        console.log('new message sent:', e);
-                        // this.$store.dispatch("chat/fetchChats");
+                        // console.log('new message sent:', e);
                         this.$store.dispatch('chat/addNewChatMessage', e.chatMessage)
                     }
                 );
@@ -613,8 +608,7 @@ export default {
                 window.Echo.private("chat." + this.chats[prop].chat_id).listen(
                     "NewChatMessage",
                     (e) => {
-                        console.log('new message sent:', e);
-                        // this.$store.dispatch("chat/fetchChats");
+                        // console.log('new message sent:', e);
                         this.$store.dispatch('chat/addNewChatMessage', e.chatMessage)
                     }
                 );
@@ -626,8 +620,7 @@ export default {
                 window.Echo.private("group-chat." + group.id).listen(
                     "NewGroupChatMessage",
                     (e) => {
-                        console.log('new group chat messages:', e)
-                        // console.log(e.groupChatMessage.group_chat_id)
+                        // console.log('new group chat messages:', e)
                         this.$store.dispatch(
                             "chat/addNewGroupChatMessage",
                             e.groupChatMessage
@@ -642,8 +635,7 @@ export default {
                 window.Echo.private("group-chat." + group.id).listen(
                     "NewGroupChatMessage",
                     (e) => {
-                        console.log('new group chat messages:', e)
-                        // console.log(e.groupChatMessage.group_chat_id)
+                        // console.log('new group chat messages:', e)
                         this.$store.dispatch(
                             "chat/addNewGroupChatMessage",
                             e.groupChatMessage

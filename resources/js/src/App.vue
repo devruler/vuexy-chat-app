@@ -116,17 +116,6 @@ export default {
                         this.$store.commit("UPDATE_USER_INFO", user);
                     else this.$store.commit("chat/UPDATE_CONTACT_STATUS", user);
                 });
-            // .listen('UserOnline', (e) => {
-            //     // this.friend = e.user;
-            //     console.log('new user online', e)
-            //     if(this.$store.state.AppActiveUser.id === e.user.id) this.$store.commit('UPDATE_USER_INFO', e.user)
-            //     else this.$store.commit('chat/UPDATE_CONTACT_STATUS', e.user)
-            // })
-            // .listen('UserOffline', (e) => {
-            //     console.log('new user offline', e)
-            //     if(this.$store.state.AppActiveUser.id === e.user.id) this.$store.commit('UPDATE_USER_INFO', e.user)
-            //     else this.$store.commit('chat/UPDATE_CONTACT_STATUS', e.user)
-            // });
         },
     },
     async mounted() {
