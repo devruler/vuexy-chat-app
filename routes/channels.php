@@ -36,3 +36,8 @@ Broadcast::channel('group-chats', function ($user) {
 Broadcast::channel('user-status', function ($user) {
     return $user;
 });
+
+Broadcast::channel('meeting', function ($user) {
+    return $user;
+});
+

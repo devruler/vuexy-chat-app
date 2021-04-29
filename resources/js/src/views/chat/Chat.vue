@@ -484,7 +484,7 @@ export default {
 
             const allowedExtensions = ['txt','pdf','doc','ppt','xls','docx','pptx','xlsx','rar','zip','jpg','jpeg','png', 'gif']
 
-            if(!allowedExtensions.includes(this.attachment.name.split('.').pop())){
+            if(!allowedExtensions.includes(this.attachment.name.toLowerCase().split('.').pop())){
                 this.errors.attachment = 'File type is not allowed.'
             }else if(this.attachment.size > 5000000){
                 this.errors.attachment = 'File size must be lower than 5 megabytes.'
@@ -614,6 +614,7 @@ export default {
                 );
             }
         },
+
         listenNewGroupChatMessages(group = null) {
             // check if group exists and listen to it.
             if(group){

@@ -41,6 +41,7 @@ const router = new Router({
                 name: 'chat',
                 component: () => import('./views/chat/Chat.vue')
               },
+
             ],
         },
     // =============================================================================
@@ -65,6 +66,11 @@ const router = new Router({
               },
             ]
         },
+        {
+            path: '/meeting',
+            name: 'meeting',
+            component: () => import('./views/meeting/Meeting.vue')
+          },
         // Redirect to 404 page, if no match found
         {
             path: '*',

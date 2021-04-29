@@ -117,6 +117,23 @@ export default {
                     else this.$store.commit("chat/UPDATE_CONTACT_STATUS", user);
                 });
         },
+        listenNewMeeting(){
+            window.Echo.private("meeting").listen(
+                    "NewMeetingStarted",
+                    async (e) => {
+                        console.log('new meeting:', e);
+                        if(e.meeting.invited.includes(this.$store.state.AppActiveUser.id)){
+                            this.$vs.dialog({
+                                type: 'confirm',
+                                color: 'success',
+                                title: 'Meeting Invitation',
+                                text: 'You\'ve been invited to a meeting, join meeting?',
+                                accept: () => this.$router.push({ name: 'meeting', query: { nickname: this.$store.state.AppActiveUser.name, meetingId: e.meeting.id, password: e.meeting.password }})
+                            })
+                        }
+                    }
+                );
+        },
     },
     async mounted() {
         //   this.$store.registerModule("chat", moduleChat);
@@ -133,6 +150,9 @@ export default {
         // Listen and update online and offline status
         // axios.put('/api/users/online/'+ this.$store.state.AppActiveUser.id, {})
         this.listenOnlineOffline();
+
+
+        this.listenNewMeeting()
     },
     async created() {
         const dir = this.$vs.rtl ? "rtl" : "ltr";

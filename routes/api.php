@@ -44,3 +44,7 @@ Route::prefix('/notifications')->middleware('auth:api')->group(function () {
     Route::post('/', 'Api\NotificationController@storeNotification');
     Route::get('/', 'Api\NotificationController@getNotifications');
 });
+
+Route::prefix('zoom')->middleware('auth:api')->group(function () {
+    Route::post('meetings', 'Api\ZoomController@createMeeting');
+});

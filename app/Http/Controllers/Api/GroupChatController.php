@@ -14,13 +14,13 @@ class GroupChatController extends Controller
     public function getChatGroups()
     {
         // Get active chat groups for the current user
-        return auth()->user()->chatGroups()->with(['messages.attachment'])->get();
+        return auth()->user()->chatGroups()->with(['messages.attachment', 'users:id,name,email'])->get();
     }
 
     public function getGroupChatMessages(GroupChat $groupChat)
     {
         // Get active chat groups for the current user
-        return $groupChat->load('messages.attachment');
+        return $groupChat->load('messages.attachment', 'users:id,name,email');
     }
 
     public function storeGroup(Request $request)

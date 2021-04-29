@@ -1,5 +1,5 @@
 {
-	"authHost": "http://starter-kit.test",
+	"authHost": "http://vuexy-chat.test",
 	"authEndpoint": "/api/broadcasting/auth",
 	"clients": [],
 	"database": "redis",

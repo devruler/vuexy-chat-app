@@ -9,6 +9,7 @@
 
     <title>Vuexy  - Vuejs, HTML & Laravel Admin Dashboard Template</title>
     <!-- Styles -->
+
     <link rel="stylesheet" href="{{ asset(mix('css/main.css')) }}">
     <link rel="stylesheet" href="{{ asset(mix('css/iconfont.css')) }}">
     <link rel="stylesheet" href="{{ asset(mix('css/material-icons/material-icons.css')) }}">

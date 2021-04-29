@@ -71,7 +71,7 @@ if(typeof io !== 'undefined'){
         // key: process.env.MIX_PUSHER_APP_KEY,
         // cluster: process.env.MIX_PUSHER_APP_CLUSTER,
         // forceTLS: false,
-        // authEndpoint: 'http://starter-kit.test/api/broadcasting/auth',
+        // authEndpoint: 'http://vuexy-chat.test/api/broadcasting/auth',
     });
 
 }
