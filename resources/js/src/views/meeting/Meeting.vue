@@ -9,12 +9,12 @@
 <script>
 import ZoomFrame from "./ZoomFrame.vue";
 export default {
-  name: "app",
+  name: "meeting",
+  props: [ 'password' ],
   data: function () {
       return {
           nickname: '',
           meetingId: '',
-          password: '',
       }
   },
   components: {
@@ -23,7 +23,6 @@ export default {
   created : function (){
       this.nickname = this.$route.query.nickname;
       this.meetingId = this.$route.query.meetingId;
-      this.password = this.$route.query.password;
   }
 };
 </script>

@@ -64,6 +64,10 @@ export default {
         state.chatSearchQuery = query
     },
 
+    SET_MESSAGE_SEARCH_QUERY(state, query) {
+        state.msgSearchQuery = query
+    },
+
     MARK_SEEN_ALL_MESSAGES(state, payload) {
         payload.chatData.msg.forEach((msg) => {
             msg.isSeen = true
@@ -89,5 +93,4 @@ export default {
     UPDATE_GROUP_MESSAGES(state, updatedGroup) {
         state.groups = state.groups.map((group) => group.id === updatedGroup.id ? updatedGroup : group)
     },
-
 }

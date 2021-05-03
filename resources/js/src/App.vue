@@ -101,7 +101,6 @@ export default {
                     }
                 })
                 .joining((user) => {
-                    // axios.put('/api/users/online/'+ user.id, {})
                     user.status = "online";
                     console.log("hi from joining", user);
                     if (this.$store.state.AppActiveUser.id === user.id)
@@ -109,7 +108,6 @@ export default {
                     else this.$store.commit("chat/UPDATE_CONTACT_STATUS", user);
                 })
                 .leaving((user) => {
-                    // axios.put('/api/users/offline/'+ user.id, {})
                     user.status = "offline";
                     console.log("hi from leaving", user);
                     if (this.$store.state.AppActiveUser.id === user.id)
@@ -128,7 +126,7 @@ export default {
                                 color: 'success',
                                 title: 'Meeting Invitation',
                                 text: 'You\'ve been invited to a meeting, join meeting?',
-                                accept: () => this.$router.push({ name: 'meeting', query: { nickname: this.$store.state.AppActiveUser.name, meetingId: e.meeting.id, password: e.meeting.password }})
+                                accept: () => this.$router.push({ name: 'meeting', query: {nickname: this.$store.state.AppActiveUser.name, meetingId: e.meeting.id, }, params: { password: e.meeting.password }})
                             })
                         }
                     }
@@ -148,10 +146,9 @@ export default {
         await this.getUserInfo();
 
         // Listen and update online and offline status
-        // axios.put('/api/users/online/'+ this.$store.state.AppActiveUser.id, {})
         this.listenOnlineOffline();
 
-
+        // listen to new meetings
         this.listenNewMeeting()
     },
     async created() {

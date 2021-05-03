@@ -1,5 +1,5 @@
 {
-	"authHost": "http://vuexy-chat.test",
+	"authHost": "https://vuexy-chat.test",
 	"authEndpoint": "/api/broadcasting/auth",
 	"clients": [],
 	"database": "redis",
@@ -12,11 +12,11 @@
 	"devMode": true,
 	"host": null,
 	"port": "6001",
-	"protocol": "http",
+	"protocol": "https",
 	"socketio": {},
 	"secureOptions": 67108864,
-	"sslCertPath": "",
-	"sslKeyPath": "",
+	"sslCertPath": "C:/laragon/etc/ssl/laragon.crt",
+	"sslKeyPath": "C:/laragon/etc/ssl/laragon.key",
 	"sslCertChainPath": "",
 	"sslPassphrase": "",
 	"subscribers": {

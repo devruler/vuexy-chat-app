@@ -32,9 +32,6 @@ ZoomMtg.setZoomJSLib("https://source.zoom.us/1.9.1/lib", "/av");
 ZoomMtg.preLoadWasm();
 ZoomMtg.prepareJssdk();
 
-const API_KEY = "QvxY3s-PQQuKBJsxUn01ug";
-const API_SECRET = "F2WZB9B2ERmwE0vIyCmqINCyhT4wi9cGgjAl";
-
 export default {
     name: "ZoomFrame",
     data: function () {
@@ -52,8 +49,8 @@ export default {
     created: function () {
         // Meeting config object
         this.meetConfig = {
-            apiKey: API_KEY,
-            apiSecret: API_SECRET,
+            apiKey: process.env.MIX_ZOOM_API_KEY,
+            apiSecret: process.env.MIX_ZOOM_API_SECRET,
             meetingNumber: this.meetingId,
             userName: this.nickname,
             passWord: this.password,

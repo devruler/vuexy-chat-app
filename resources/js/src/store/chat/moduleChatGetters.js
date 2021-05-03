@@ -30,6 +30,10 @@ export default {
         })
     },
 
+    // chatMessages: (state, getters) => {
+    //     return state.chats
+    // },
+
     contacts: (state) => state.contacts.filter((contact) => contact.name.toLowerCase().includes(state.chatSearchQuery.toLowerCase())),
 
     contact: (state) => contactId => state.contacts.find((contact) => contact.id === contactId),
@@ -59,7 +63,10 @@ export default {
     groups: (state) => state.groups,
 
     // Get chat group
-    chatGroup: (state) => id => state.groups.find((group) => group.id === id),
+    chatGroup: (state) => id => {
+        let group = state.groups.find((group) => group.id === id)
+        return group
+    },
 
     groupChatLastMessaged: (state, getters) => id => {
         if (getters.chatGroup(id)) return getters.chatGroup(id).messages.slice(-1)[0]

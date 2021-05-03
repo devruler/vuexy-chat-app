@@ -51,7 +51,7 @@
                         :svgClasses="['w-6', 'h-6']"
                     ></feather-icon>
                 <vs-dropdown-menu class="dropdown-login">
-                    <vs-input icon-pack="feather" icon="icon-search" placeholder="Search" />
+                    <vs-input icon-pack="feather" icon="icon-search" type="text" placeholder="Search" v-model="msgSeachQuery" />
                 </vs-dropdown-menu>
             </vs-dropdown>
 
@@ -108,7 +108,7 @@
                         :svgClasses="['w-6', 'h-6']"
                     ></feather-icon>
                 <vs-dropdown-menu class="dropdown-login">
-                    <vs-input icon-pack="feather" icon="icon-search" placeholder="Search" />
+                    <vs-input icon-pack="feather" icon="icon-search" type="text" placeholder="Search" v-model="msgSeachQuery" />
                 </vs-dropdown-menu>
             </vs-dropdown>
 
@@ -241,6 +241,7 @@ export default {
         };
     },
     computed: {
+
         isPinnedLocal: {
             get() {
                 return this.isPinnedProp;
@@ -293,11 +294,14 @@ export default {
                       .map((user) => user.id)
                 : [];
         },
-        // minDateTime() {
-        //     var now = new Date()
-        //     now.setMinutes((now.getMinutes() + 30) - now.getTimezoneOffset())
-        //     return now.toISOString().slice(0,16);
-        // },
+        msgSeachQuery: {
+            get () {
+                return this.$store.state.chat.msgSearchQuery
+            },
+            set (value) {
+                this.$store.commit('chat/SET_MESSAGE_SEARCH_QUERY', value)
+            }
+        }
     },
     methods: {
         getUserStatus(isActiveUser) {
@@ -323,14 +327,17 @@ export default {
                     error: "",
                 };
                 this.popupMeeting = false;
+
                 await this.$router.push({
                     name: "meeting",
                     query: {
-                        nickname: this.$store.state.AppActiveUser.name,
-                        meetingId: res.data.id,
-                        password: res.data.password,
+                        nickname: this.$store.state.AppActiveUser.name, meetingId: res.data.id,
                     },
+                    params: {
+                        password: res.data.password,
+                    }
                 });
+
             } catch (err) {
                 console.log(err);
                 if (err.response.status >= 400 && err.response.status < 500) {

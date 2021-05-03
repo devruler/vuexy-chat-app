@@ -10,14 +10,14 @@
 <template>
     <div id="component-chat-log" class="m-8" v-if="chatData">
         <div
-            v-for="(msg, index) in chatData.msg"
+            v-for="(msg, index) in messages"
             class="msg-grp-container"
             :key="index"
         >
             <!-- If previous msg is older than current time -->
-            <template v-if="chatData.msg[index - 1]">
+            <template v-if="messages[index - 1]">
                 <vs-divider
-                    v-if="!isSameDay(msg.time, chatData.msg[index - 1].time)"
+                    v-if="!isSameDay(msg.time, messages[index - 1].time)"
                     class="msg-time"
                 >
                     <span>{{ toDate(msg.time) }}</span>
@@ -26,7 +26,7 @@
                     class="spacer mt-8"
                     v-if="
                         !hasSentPreviousMsg(
-                            chatData.msg[index - 1].isSent,
+                            messages[index - 1].isSent,
                             msg.isSent
                         )
                     "
@@ -37,14 +37,14 @@
                 class="flex items-start"
                 :class="[{ 'flex-row-reverse': msg.isSent }]"
             >
-                <template v-if="chatData.msg[index - 1]">
+                <template v-if="messages[index - 1]">
                     <template
                         v-if="
                             !hasSentPreviousMsg(
-                                chatData.msg[index - 1].isSent,
+                                messages[index - 1].isSent,
                                 msg.isSent
                             ) ||
-                            !isSameDay(msg.time, chatData.msg[index - 1].time)
+                            !isSameDay(msg.time, messages[index - 1].time)
                         "
                     >
                         <vs-avatar
@@ -67,18 +67,18 @@
                     ></vs-avatar>
                 </template>
 
-                <template v-if="chatData.msg[index - 1]">
+                <template v-if="messages[index - 1]">
                     <div
                         class="mr-16"
                         v-if="
                             !(
                                 !hasSentPreviousMsg(
-                                    chatData.msg[index - 1].isSent,
+                                    messages[index - 1].isSent,
                                     msg.isSent
                                 ) ||
                                 !isSameDay(
                                     msg.time,
-                                    chatData.msg[index - 1].time
+                                    messages[index - 1].time
                                 )
                             )
                         "
@@ -154,6 +154,9 @@ export default {
             return (last_sender, current_sender) =>
                 last_sender === current_sender;
         },
+        messages() {
+            return this.chatData.msg.filter(msg => msg.textContent.toLowerCase().includes(this.$store.state.chat.msgSearchQuery.toLowerCase()))
+        }
     },
     methods: {
         isSameDay(time_to, time_from) {
@@ -178,8 +181,6 @@ export default {
                 this.$parent.$el.scrollTop = this.$parent.$el.scrollHeight;
             });
         },
-
-
         msgTime(time){
             return new Date(time).toLocaleString();
         }

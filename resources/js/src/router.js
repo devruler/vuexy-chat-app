@@ -16,61 +16,66 @@ Vue.use(Router)
 const router = new Router({
     mode: 'history',
     base: '/',
-    scrollBehavior () {
-        return { x: 0, y: 0 }
+    scrollBehavior() {
+        return {
+            x: 0,
+            y: 0
+        }
     },
     routes: [
 
         {
-    // =============================================================================
-    // MAIN LAYOUT ROUTES
-    // =============================================================================
+            // =============================================================================
+            // MAIN LAYOUT ROUTES
+            // =============================================================================
             path: '',
             component: () => import('./layouts/main/Main.vue'),
             children: [
-        // =============================================================================
-        // Theme Routes
-        // =============================================================================
-              {
-                path: '/',
-                name: 'home',
-                component: () => import('./views/Home.vue')
-              },
-              {
-                path: '/chat',
-                name: 'chat',
-                component: () => import('./views/chat/Chat.vue')
-              },
+                // =============================================================================
+                // Theme Routes
+                // =============================================================================
+                {
+                    path: '/',
+                    name: 'home',
+                    component: () => import('./views/Home.vue')
+                },
+                {
+                    path: '/chat',
+                    name: 'chat',
+                    component: () => import('./views/chat/Chat.vue')
+                },
 
             ],
         },
-    // =============================================================================
-    // FULL PAGE LAYOUTS
-    // =============================================================================
+        // =============================================================================
+        // FULL PAGE LAYOUTS
+        // =============================================================================
         {
             path: '',
             component: () => import('@/layouts/full-page/FullPage.vue'),
             children: [
-        // =============================================================================
-        // PAGES
-        // =============================================================================
-              {
-                path: '/pages/login',
-                name: 'page-login',
-                component: () => import('@/views/pages/Login.vue')
-              },
-              {
-                path: '/pages/error-404',
-                name: 'page-error-404',
-                component: () => import('@/views/pages/Error404.vue')
-              },
+                // =============================================================================
+                // PAGES
+                // =============================================================================
+                {
+                    path: '/pages/login',
+                    name: 'page-login',
+                    component: () => import('@/views/pages/Login.vue')
+                },
+                {
+                    path: '/pages/error-404',
+                    name: 'page-error-404',
+                    component: () => import('@/views/pages/Error404.vue')
+                },
             ]
         },
+        // meeting view
         {
             path: '/meeting',
             name: 'meeting',
-            component: () => import('./views/meeting/Meeting.vue')
-          },
+            component: () => import('./views/meeting/Meeting.vue'),
+            props: true
+        },
         // Redirect to 404 page, if no match found
         {
             path: '*',
@@ -80,8 +85,8 @@ const router = new Router({
 })
 
 router.afterEach(() => {
-  // Remove initial loading
-  const appLoading = document.getElementById('loading-bg')
+    // Remove initial loading
+    const appLoading = document.getElementById('loading-bg')
     if (appLoading) {
         appLoading.style.display = "none";
     }

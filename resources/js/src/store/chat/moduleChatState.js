@@ -24,4 +24,7 @@ export default {
 
   // Stores Chat Contacts
   groups: [],
+
+  // Messages search query
+  msgSearchQuery: '',
 }
