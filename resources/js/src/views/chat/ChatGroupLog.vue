@@ -229,13 +229,19 @@ export default {
                 this.$parent.$el.scrollTop = this.$parent.$el.scrollHeight;
             });
         },
-
+        scrollToMsgOnUpdate() {
+            this.$nextTick(() => {
+                const chatElements = Array.from(document.querySelector('#component-chat-log').children);
+                chatElements[chatElements.length - 1].scrollIntoView({behavior: "smooth", block: "center", inline: "nearest"});
+            });
+        },
         msgTime(time){
             return new Date(time).toLocaleString();
         }
     },
     updated() {
         this.scrollToBottom();
+        this.scrollToMsgOnUpdate();
     },
     mounted() {
         this.scrollToBottom();

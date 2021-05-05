@@ -158,14 +158,6 @@ export default {
             return this.chatData.msg.filter(msg => msg.textContent.toLowerCase().includes(this.$store.state.chat.msgSearchQuery.toLowerCase()))
         }
     },
-    // watch: {
-    //     messages(){
-    //         console.log('run')
-    //         this.$nextTick(() => {
-    //             document.querySelector('.chat-content-scroll-area').scrollTo(0,0)
-    //         })
-    //     }
-    // },
     methods: {
         isSameDay(time_to, time_from) {
             const date_time_to = new Date(Date.parse(time_to));
@@ -201,7 +193,6 @@ export default {
     },
     updated() {
         this.scrollToBottom();
-
         this.scrollToMsgOnUpdate();
     },
     mounted() {
