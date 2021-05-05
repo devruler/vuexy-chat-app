@@ -43,8 +43,7 @@
                             !hasSentPreviousMsg(
                                 messages[index - 1].isSent,
                                 msg.isSent
-                            ) ||
-                            !isSameDay(msg.time, messages[index - 1].time)
+                            ) || !isSameDay(msg.time, messages[index - 1].time)
                         "
                     >
                         <vs-avatar
@@ -76,10 +75,7 @@
                                     messages[index - 1].isSent,
                                     msg.isSent
                                 ) ||
-                                !isSameDay(
-                                    msg.time,
-                                    messages[index - 1].time
-                                )
+                                !isSameDay(msg.time, messages[index - 1].time)
                             )
                         "
                     ></div>
@@ -141,13 +137,25 @@ export default {
         activeUserImg() {
             return this.$store.state.AppActiveUser.photo;
         },
+        // senderImg() {
+        //     return (isSentByActiveUser) => {
+        //         if (isSentByActiveUser)
+        //             return this.$store.state.AppActiveUser.photo;
+        //         else
+        //             return this.$store.getters["chat/contact"](this.userId)
+        //                 .photo;
+        //     };
+
         senderImg() {
             return (isSentByActiveUser) => {
                 if (isSentByActiveUser)
-                    return this.$store.state.AppActiveUser.photo;
+                    return this.$store.state.AppActiveUser.photo
+                    ? this.$store.state.AppActiveUser.photo
+                    : this.avatarFromName(this.$store.state.AppActiveUser.name);
                 else
-                    return this.$store.getters["chat/contact"](this.userId)
-                        .photo;
+                    return this.$store.getters["chat/contact"](this.userId  ).photo
+                        ? this.$store.getters["chat/contact"](this.userId).photo
+                        : this.avatarFromName(this.$store.getters["chat/contact"](this.userId).name) ;
             };
         },
         hasSentPreviousMsg() {
@@ -155,8 +163,14 @@ export default {
                 last_sender === current_sender;
         },
         messages() {
-            return this.chatData.msg.filter(msg => msg.textContent.toLowerCase().includes(this.$store.state.chat.msgSearchQuery.toLowerCase()))
-        }
+            return this.chatData.msg.filter((msg) =>
+                msg.textContent
+                    .toLowerCase()
+                    .includes(
+                        this.$store.state.chat.msgSearchQuery.toLowerCase()
+                    )
+            );
+        },
     },
     methods: {
         isSameDay(time_to, time_from) {
@@ -183,13 +197,26 @@ export default {
         },
         scrollToMsgOnUpdate() {
             this.$nextTick(() => {
-                const chatElements = Array.from(document.querySelector('#component-chat-log').children)
-                chatElements[chatElements.length - 1].scrollIntoView({behavior: "smooth", block: "center", inline: "nearest"})
+                const chatElements = Array.from(
+                    document.querySelector("#component-chat-log").children
+                );
+                chatElements[chatElements.length - 1].scrollIntoView({
+                    behavior: "smooth",
+                    block: "center",
+                    inline: "nearest",
+                });
             });
         },
-        msgTime(time){
+        msgTime(time) {
             return new Date(time).toLocaleString();
-        }
+        },
+        avatarFromName(name) {
+            return (
+                "https://ui-avatars.com/api/?name=" +
+                name.split(" ").join("+") +
+                "&background=random"
+            );
+        },
     },
     updated() {
         this.scrollToBottom();
