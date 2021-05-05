@@ -158,6 +158,14 @@ export default {
             return this.chatData.msg.filter(msg => msg.textContent.toLowerCase().includes(this.$store.state.chat.msgSearchQuery.toLowerCase()))
         }
     },
+    // watch: {
+    //     messages(){
+    //         console.log('run')
+    //         this.$nextTick(() => {
+    //             document.querySelector('.chat-content-scroll-area').scrollTo(0,0)
+    //         })
+    //     }
+    // },
     methods: {
         isSameDay(time_to, time_from) {
             const date_time_to = new Date(Date.parse(time_to));
@@ -181,12 +189,20 @@ export default {
                 this.$parent.$el.scrollTop = this.$parent.$el.scrollHeight;
             });
         },
+        scrollToMsgOnUpdate() {
+            this.$nextTick(() => {
+                const chatElements = Array.from(document.querySelector('#component-chat-log').children)
+                chatElements[chatElements.length - 1].scrollIntoView({behavior: "smooth", block: "center", inline: "nearest"})
+            });
+        },
         msgTime(time){
             return new Date(time).toLocaleString();
         }
     },
     updated() {
         this.scrollToBottom();
+
+        this.scrollToMsgOnUpdate();
     },
     mounted() {
         this.scrollToBottom();

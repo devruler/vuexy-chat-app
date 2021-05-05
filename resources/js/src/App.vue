@@ -115,22 +115,36 @@ export default {
                     else this.$store.commit("chat/UPDATE_CONTACT_STATUS", user);
                 });
         },
-        listenNewMeeting(){
+        listenNewMeeting() {
             window.Echo.private("meeting").listen(
-                    "NewMeetingStarted",
-                    async (e) => {
-                        console.log('new meeting:', e);
-                        if(e.meeting.invited.includes(this.$store.state.AppActiveUser.id)){
-                            this.$vs.dialog({
-                                type: 'confirm',
-                                color: 'success',
-                                title: 'Meeting Invitation',
-                                text: 'You\'ve been invited to a meeting, join meeting?',
-                                accept: () => this.$router.push({ name: 'meeting', query: {nickname: this.$store.state.AppActiveUser.name, meetingId: e.meeting.id, }, params: { password: e.meeting.password }})
-                            })
-                        }
+                "NewMeetingStarted",
+                async (e) => {
+                    console.log("new meeting:", e);
+                    if (
+                        e.meeting.invited.includes(
+                            this.$store.state.AppActiveUser.id
+                        )
+                    ) {
+                        this.$vs.dialog({
+                            type: "confirm",
+                            color: "success",
+                            title: "Meeting Invitation",
+                            text:
+                                "You've been invited to a meeting, join meeting?",
+                            accept: () =>
+                                this.$router.push({
+                                    name: "meeting",
+                                    query: {
+                                        nickname: this.$store.state
+                                            .AppActiveUser.name,
+                                        meetingId: e.meeting.id,
+                                    },
+                                    params: { password: e.meeting.password },
+                                }),
+                        });
                     }
-                );
+                }
+            );
         },
     },
     async mounted() {
@@ -149,7 +163,7 @@ export default {
         this.listenOnlineOffline();
 
         // listen to new meetings
-        this.listenNewMeeting()
+        this.listenNewMeeting();
     },
     async created() {
         const dir = this.$vs.rtl ? "rtl" : "ltr";
