@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/pages/login', 'ApplicationController')->name('login');
+Route::get('/pages/register', 'ApplicationController')->name('register');
 
 Route::middleware(['auth'])->group(function () {
     Route::get('/{any}', 'ApplicationController')->where('any', '.*');
