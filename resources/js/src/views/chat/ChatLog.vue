@@ -96,10 +96,12 @@
                             <hr
                                 class="my-3 border border-grey border-opacity-25"
                             />
+                            <audio v-if="msg.attachment.extension == 'webm'" :src="msg.attachment.path" controls></audio>
                             <a
                                 :href="msg.attachment.path"
                                 class="flex align-items text-sm"
                                 target="_blank"
+                                v-else
                             >
                                 <feather-icon
                                     icon="PaperclipIcon"

@@ -52,7 +52,7 @@ class GroupChatController extends Controller
             'payload.msg.textContent' => ['nullable', 'string',],
             'payload.msg.isSeen' => ['boolean',],
             'payload.msg.isSent' => ['boolean',],
-            'attachment' => ['sometimes','file','mimes:txt,pdf,doc,ppt,xls,docx,pptx,xlsx,rar,zip,jpg,jpeg,png,gif','max:5000'],
+            'attachment' => ['sometimes','file','mimes:txt,pdf,doc,ppt,xls,docx,pptx,xlsx,rar,zip,jpg,jpeg,png,gif,octet-stream,webm,mpeg,mpga,mpeg,mp3,wav','max:5000'],
         ]);
 
         $payload = $request->payload;

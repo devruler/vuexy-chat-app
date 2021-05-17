@@ -34,7 +34,11 @@
                 <div class="relative inline-flex">
                     <vs-avatar
                         class="m-0 border-2 border-solid border-white"
-                        :src="activeUser.photo || ('https://ui-avatars.com/api/?name=' + activeUser.name)"
+                        :src="
+                            activeUser.photo ||
+                            'https://ui-avatars.com/api/?name=' +
+                                activeUser.name
+                        "
                         size="40px"
                     />
                     <div
@@ -231,6 +235,72 @@
                         @keyup.enter="sendMsg"
                     />
 
+                    <vs-dropdown
+                        class="cursor-pointer"
+                        vs-custom-content
+                        vs-trigger-click
+                    >
+                        <feather-icon
+                            icon="MicIcon"
+                            class="cursor-pointer mx-2"
+                            :svgClasses="['w-6', 'h-6']"
+                        ></feather-icon>
+                        <vs-dropdown-menu
+                            class="dropdown-record-audio flex justify-center"
+                        >
+                            <!-- <h3>Record audio</h3> -->
+                            <!-- <audio id="recordedAudio" src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"></audio> -->
+                            <div
+                                class="flex mb-3 justify-center items-center w-full"
+                            >
+                                <vs-button
+                                    radius
+                                    color="success"
+                                    type="gradient"
+                                    class="mx-2"
+                                    id="record"
+                                    icon-pack="feather" icon="icon-play"
+                                    @click.prevent="startAudioRecording"
+                                    ></vs-button
+                                >
+                                <vs-button
+                                    radius
+                                    color="danger"
+                                    type="gradient"
+                                    class="mx-2"
+                                    id="stop-record"
+                                    icon-pack="feather" icon="icon-stop-circle"
+                                    @click.prevent="stopAudioRecording"
+                                    ></vs-button
+                                >
+                                <audio id="recorded-audio" :src="recordedAudio.src" :controls="recordedAudio.controls" :autoplay="recordedAudio.autoplay"></audio>
+                                <!-- <audio controls class="mx-2">
+                                    <source
+                                        src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"
+                                        type="audio/mpeg"
+                                    />
+                                    <p>
+                                        Your browser doesn't support HTML5
+                                        audio. Here is a
+                                        <a href="myAudio.mp4"
+                                            >link to the audio</a
+                                        >
+                                        instead.
+                                    </p>
+                                </audio> -->
+                                <vs-button
+                                    radius
+                                    color="primary"
+                                    type="gradient"
+                                    class="mx-2"
+                                    icon-pack="feather" icon="icon-send"
+                                    @click.prevent="sendMsg"
+                                    ></vs-button
+                                >
+                            </div>
+                        </vs-dropdown-menu>
+                    </vs-dropdown>
+
                     <feather-icon
                         icon="PaperclipIcon"
                         class="cursor-pointer mx-2"
@@ -248,19 +318,16 @@
                             type="file"
                             class="w-full my-3"
                             id="file-upload"
-
                             @change="handleFile"
                         />
 
                         <vs-alert
                             color="danger"
                             title="Error"
-                            :active="
-                                errors.hasOwnProperty('attachment')
-                            "
+                            :active="errors.hasOwnProperty('attachment')"
                             class="my-3"
                         >
-                            {{ this.errors.attachment}}
+                            {{ this.errors.attachment }}
                         </vs-alert>
 
                         <vs-button
@@ -291,6 +358,7 @@
                         class="mb-4 bg-white p-8 shadow-md rounded-full"
                         svgClasses="w-16 h-16"
                     ></feather-icon>
+
                     <h4
                         class="py-2 px-4 bg-white shadow-md rounded-full cursor-pointer"
                         @click.stop="toggleChatSidebar(true)"
@@ -344,6 +412,13 @@ export default {
 
             newGroup: { name: "", contacts: [] },
             popupUpload: false,
+            rec: null,
+            audioChunks: [],
+            recordedAudio: {
+                src: '',
+                controls: true,
+                autoplay: true
+            }
         };
     },
     watch: {
@@ -482,14 +557,34 @@ export default {
         handleFile(e) {
             this.attachment = e.target.files[0];
 
-            const allowedExtensions = ['txt','pdf','doc','ppt','xls','docx','pptx','xlsx','rar','zip','jpg','jpeg','png', 'gif']
+            const allowedExtensions = [
+                "txt",
+                "pdf",
+                "doc",
+                "ppt",
+                "xls",
+                "docx",
+                "pptx",
+                "xlsx",
+                "rar",
+                "zip",
+                "jpg",
+                "jpeg",
+                "png",
+                "gif",
+            ];
 
-            if(!allowedExtensions.includes(this.attachment.name.toLowerCase().split('.').pop())){
-                this.errors.attachment = 'File type is not allowed.'
-            }else if(this.attachment.size > 5000000){
-                this.errors.attachment = 'File size must be lower than 5 megabytes.'
-            }else{
-                delete this.errors.attachment
+            if (
+                !allowedExtensions.includes(
+                    this.attachment.name.toLowerCase().split(".").pop()
+                )
+            ) {
+                this.errors.attachment = "File type is not allowed.";
+            } else if (this.attachment.size > 5000000) {
+                this.errors.attachment =
+                    "File size must be lower than 5 megabytes.";
+            } else {
+                delete this.errors.attachment;
             }
         },
         async sendMsg() {
@@ -497,6 +592,8 @@ export default {
             if (this.attachment) if (this.attachment.size > 5000000) return;
 
             this.$store.commit("SET_IS_LOADING", true);
+
+            console.log(this.attachment);
 
             const attachment = this.attachment;
             const chatMsg = {
@@ -509,7 +606,7 @@ export default {
                 },
                 id: this.activeChatUser,
                 group_chat_id: this.activeChatGroup,
-            }
+            };
             const payload = JSON.stringify(chatMsg);
 
             const formData = new FormData();
@@ -593,12 +690,15 @@ export default {
         },
 
         listenNewChatMessages(chat = null) {
-            if(chat){
+            if (chat) {
                 window.Echo.private("chat." + chat.id).listen(
                     "NewChatMessage",
                     (e) => {
                         // console.log('new message sent:', e);
-                        this.$store.dispatch('chat/addNewChatMessage', e.chatMessage)
+                        this.$store.dispatch(
+                            "chat/addNewChatMessage",
+                            e.chatMessage
+                        );
                     }
                 );
                 return;
@@ -609,7 +709,10 @@ export default {
                     "NewChatMessage",
                     (e) => {
                         // console.log('new message sent:', e);
-                        this.$store.dispatch('chat/addNewChatMessage', e.chatMessage)
+                        this.$store.dispatch(
+                            "chat/addNewChatMessage",
+                            e.chatMessage
+                        );
                     }
                 );
             }
@@ -617,7 +720,7 @@ export default {
 
         listenNewGroupChatMessages(group = null) {
             // check if group exists and listen to it.
-            if(group){
+            if (group) {
                 window.Echo.private("group-chat." + group.id).listen(
                     "NewGroupChatMessage",
                     (e) => {
@@ -666,6 +769,36 @@ export default {
             // this.$store.commit('SET_IS_LOADING', false)
             this.$vs.loading.close();
         },
+        handleAudioRecording(stream){
+                this.rec = new MediaRecorder(stream);
+
+                this.rec.ondataavailable = (e) => {
+                    this.audioChunks = [e.data];
+                    if (this.rec.state == "inactive") {
+                        console.log(this.audioChunks)
+                        let blob = new Blob(this.audioChunks, {
+                            type: "audio/mpeg",
+                        });
+                        this.attachment = new File(this.audioChunks, "recorded-audio.mp3");
+                        this.recordedAudio.src = URL.createObjectURL(blob);
+                        // sendData(blob);
+                    }
+                };
+        },
+        startAudioRecording(){
+            this.rec.start();
+        },
+        stopAudioRecording(){
+            this.rec.stop();
+        },
+        recordAudio() {
+
+            navigator.mediaDevices
+                .getUserMedia({ audio: true })
+                .then((stream) => {
+                    this.handleAudioRecording(stream);
+                });
+        },
     },
     components: {
         VuePerfectScrollbar,
@@ -692,15 +825,15 @@ export default {
 
         this.listenNewGroupChats();
         this.listenNewGroupChatMessages();
-
     },
     beforeDestroy() {
         this.$store.unregisterModule("chat");
     },
     mounted() {
         this.$store.dispatch("chat/setChatSearchQuery", "");
-    },
 
+        this.recordAudio();
+    },
 };
 </script>
 
@@ -708,4 +841,7 @@ export default {
 <style lang="scss">
 @import "@sass/vuexy/apps/chat.scss";
 
+.dropdown-record-audio {
+    min-width: 350px;
+}
 </style>
