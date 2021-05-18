@@ -1,0 +1,180 @@
+[33mcommit c79f43f0524d381f8a998adc16b3e30e95e3a07d[m[33m ([m[1;36mHEAD -> [m[1;32mvoice/messages[m[33m)[m
+Merge: ffd7c9c 13bc961
+Author: Reda Ifis <rezifis@gmail.com>
+Date:   Mon May 17 14:21:59 2021 +0100
+
+    Merge branch 'update/vuesax' into voice/messages
+
+[33mcommit 13bc96120cbc7d344820387781f6e26868f6dee1[m[33m ([m[1;32mupdate/vuesax[m[33m)[m
+Author: Reda Ifis <rezifis@gmail.com>
+Date:   Mon May 17 14:20:59 2021 +0100
+
+    updated vuesax
+
+[33mcommit ffd7c9cf89ba6efd67631739b6e0f6bff0afeb9e[m
+Author: Reda Ifis <rezifis@gmail.com>
+Date:   Mon May 17 12:57:55 2021 +0100
+
+    record and send voice messages
+
+[33mcommit db17eccfaea6ae193e39e8062f3e1c38cf14c346[m[33m ([m[1;32mmaster[m[33m)[m
+Author: Reda Ifis <rezifis@gmail.com>
+Date:   Sat May 15 08:38:31 2021 +0000
+
+    add emailing functionality
+
+[33mcommit 88eb174c1cff2ecfbb73bdcbf254bbb247716983[m
+Author: Reda Ifis <rezifis@gmail.com>
+Date:   Wed May 5 13:16:16 2021 +0000
+
+    add avatar placeholder to chat log
+
+[33mcommit 3a4604840e8d8755c3c52a7a51125d9fd744c6c7[m
+Author: Reda Ifis <rezifis@gmail.com>
+Date:   Wed May 5 11:48:39 2021 +0000
+
+    fix log messages scroll on update
+
+[33mcommit c21ed9fe50a1442980e4df69b6580bcd97d7f14f[m
+Author: Reda Ifis <rezifis@gmail.com>
+Date:   Wed May 5 11:46:11 2021 +0000
+
+    fix log messages scroll on update
+
+[33mcommit 9849831fbdee6394219d30a95e53b3ee7f30db5a[m
+Author: Reda Ifis <rezifis@gmail.com>
+Date:   Mon May 3 14:25:25 2021 +0000
+
+    add messages search functionality
+
+[33mcommit 93895a6ca27a429b655f8db671124ae8048fe6c7[m
+Author: Reda Ifis <rezifis@gmail.com>
+Date:   Thu Apr 29 18:31:39 2021 +0000
+
+    zoom api integration
+
+[33mcommit 7b1d0b7dffbbd4f12b013f114134a2dfa6ee1e44[m
+Author: Reda Ifis <rezifis@gmail.com>
+Date:   Sat Apr 24 12:18:30 2021 +0000
+
+    Code cleanup
+
+[33mcommit 3217f72c947caca6666b18ed8cfd9ccca60adfe4[m
+Author: Reda Ifis <rezifis@gmail.com>
+Date:   Fri Apr 23 15:16:59 2021 +0000
+
+    fix chatting bugs & code cleanup
+
+[33mcommit 32f7bd45445b1e8ba51fef3fb6255bee7a56bfbb[m
+Author: Reda Ifis <rezifis@gmail.com>
+Date:   Thu Apr 22 11:57:30 2021 +0000
+
+    switch from pusher to socket io & laravel-echo-server
+
+[33mcommit f7eea8242637ae6439bb0632228d5a44c9888613[m
+Author: Reda Ifis <rezifis@gmail.com>
+Date:   Wed Apr 21 11:48:54 2021 +0000
+
+    fix presence status bugs
+
+[33mcommit a4601246a5aa8eab01be23f2fa5d2b0e3379b303[m
+Author: Reda Ifis <rezifis@gmail.com>
+Date:   Wed Apr 21 03:17:49 2021 +0000
+
+    fixing offline users status not showing
+
+[33mcommit 1c95343e1fc539a614f6224a8b2bb9d6e3d847af[m
+Author: Reda Ifis <rezifis@gmail.com>
+Date:   Mon Apr 19 13:48:48 2021 +0000
+
+    added time tooltip on messages hover
+
+[33mcommit d99d7a8ae378cdf28d189f0b05347dabef29097a[m
+Author: Reda Ifis <rezifis@gmail.com>
+Date:   Sat Apr 17 11:24:01 2021 +0000
+
+    fixing online offline status not updating
+
+[33mcommit c245de929857869284ea26dfe2d4ca4830ade6b7[m
+Author: Reda Ifis <rezifis@gmail.com>
+Date:   Fri Apr 16 18:44:05 2021 +0000
+
+    added realtime online offline status
+
+[33mcommit 0f5aba600cea70935aca49acda74d23a6e028926[m
+Author: Reda Ifis <rezifis@gmail.com>
+Date:   Fri Apr 16 12:07:46 2021 +0000
+
+    added group chat
+
+[33mcommit cdd235e64ddc5ec8b560defe30503ed404b26ecb[m
+Author: Reda Ifis <rezifis@gmail.com>
+Date:   Tue Apr 13 20:30:58 2021 +0000
+
+    added files sharing feature
+
+[33mcommit d632ad5f12f04229cd171c34d16cacecedd72fb3[m
+Author: Reda Ifis <rezifis@gmail.com>
+Date:   Tue Apr 13 14:49:17 2021 +0000
+
+    added video and attachment and search icons
+
+[33mcommit c40fa89e315b99528cdd9a18315eb58909bbd1fe[m
+Author: Reda Ifis <rezifis@gmail.com>
+Date:   Tue Apr 13 14:00:10 2021 +0000
+
+    fixing private chat bugs
+
+[33mcommit 24059b4692e37153c6d4617321a04d9260a267d5[m
+Author: Reda Ifis <rezifis@gmail.com>
+Date:   Mon Apr 12 13:12:56 2021 +0000
+
+    updated navbar & added chats pinning functionality
+
+[33mcommit c732c607cfd39f15ce1d36adb43dd3e4cf3748c4[m
+Author: Reda Ifis <rezifis@gmail.com>
+Date:   Mon Apr 12 12:07:41 2021 +0000
+
+    configure pusher and broadcast chat events
+
+[33mcommit 73ceef49e658a3d9df7490e767f5497e33554281[m
+Author: Reda Ifis <rezifis@gmail.com>
+Date:   Sun Apr 11 20:41:23 2021 +0000
+
+    added chats routes and configured pusher
+
+[33mcommit 867cf5e780b3b2119cfa92da55768b057023499b[m
+Author: Reda Ifis <rezifis@gmail.com>
+Date:   Sun Apr 11 13:02:24 2021 +0000
+
+    change photoURL variable to photo
+
+[33mcommit f8b8a5be8fe4dcaf0bb01c887cc2eab5a9a8e75e[m
+Author: Reda Ifis <rezifis@gmail.com>
+Date:   Sun Apr 11 13:00:23 2021 +0000
+
+    fixing contacts
+
+[33mcommit 7538e83b420928b6ed81db746e5e47ad86df55af[m
+Author: Reda Ifis <rezifis@gmail.com>
+Date:   Sun Apr 11 11:17:37 2021 +0000
+
+    define relationships
+
+[33mcommit 29d050d0b0eab288dc1256724f55ce234d867ac7[m
+Author: Reda Ifis <rezifis@gmail.com>
+Date:   Sun Apr 11 11:03:50 2021 +0000
+
+    change uid variable to id
+
+[33mcommit 19f2ec3bdcc559d6a1b858427428d3ab29c38d45[m
+Author: Reda Ifis <rezifis@gmail.com>
+Date:   Sun Apr 11 11:02:16 2021 +0000
+
+    change displayName variable to name
+
+[33mcommit 6087158e94569e9c46e417607481f489ec72a5c2[m
+Author: Reda Ifis <rezifis@gmail.com>
+Date:   Sun Apr 11 10:56:20 2021 +0000
+
+    init commit

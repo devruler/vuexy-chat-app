@@ -261,6 +261,7 @@
                                     id="record"
                                     icon-pack="feather" icon="icon-play"
                                     @click.prevent="startAudioRecording"
+                                    :disabled="isRecordingActive"
                                     ></vs-button
                                 >
                                 <vs-button
@@ -271,6 +272,7 @@
                                     id="stop-record"
                                     icon-pack="feather" icon="icon-stop-circle"
                                     @click.prevent="stopAudioRecording"
+                                    :disabled="!isRecordingActive"
                                     ></vs-button
                                 >
                                 <audio id="recorded-audio" :src="recordedAudio.src" :controls="recordedAudio.controls" :autoplay="recordedAudio.autoplay"></audio>
@@ -294,6 +296,7 @@
                                     type="gradient"
                                     class="mx-2"
                                     icon-pack="feather" icon="icon-send"
+                                    :disabled="attachment ? (attachment.mimeType == 'audio/mpeg' ? false : true) : true"
                                     @click.prevent="sendMsg"
                                     ></vs-button
                                 >
@@ -418,7 +421,8 @@ export default {
                 src: '',
                 controls: true,
                 autoplay: true
-            }
+            },
+            isRecordingActive: false,
         };
     },
     watch: {
@@ -776,6 +780,7 @@ export default {
                     this.audioChunks = [e.data];
                     if (this.rec.state == "inactive") {
                         console.log(this.audioChunks)
+                        this.isRecordingActive = false;
                         let blob = new Blob(this.audioChunks, {
                             type: "audio/mpeg",
                         });
@@ -787,9 +792,11 @@ export default {
         },
         startAudioRecording(){
             this.rec.start();
+            this.isRecordingActive = true
         },
         stopAudioRecording(){
             this.rec.stop();
+            this.isRecordingActive = false
         },
         recordAudio() {
 
