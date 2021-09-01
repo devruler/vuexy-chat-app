@@ -296,7 +296,7 @@
                                     type="gradient"
                                     class="mx-2"
                                     icon-pack="feather" icon="icon-send"
-                                    :disabled="attachment ? (attachment.mimeType == 'audio/mpeg' ? false : true) : true"
+                                    :disabled="attachment ? (attachment.type == 'mp3' ? false : true) : true"
                                     @click.prevent="sendMsg"
                                     ></vs-button
                                 >
@@ -779,12 +779,13 @@ export default {
                 this.rec.ondataavailable = (e) => {
                     this.audioChunks = [e.data];
                     if (this.rec.state == "inactive") {
-                        console.log(this.audioChunks)
                         this.isRecordingActive = false;
                         let blob = new Blob(this.audioChunks, {
                             type: "audio/mpeg",
                         });
-                        this.attachment = new File(this.audioChunks, "recorded-audio.mp3");
+                        this.attachment = new File(this.audioChunks, "recorded-audio.mp3", { type: "mp3" });
+                        console.log(this.attachment)
+                        console.log(this.attachment.type)
                         this.recordedAudio.src = URL.createObjectURL(blob);
                         // sendData(blob);
                     }
